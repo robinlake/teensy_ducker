@@ -4,27 +4,43 @@
 #include <SD.h>
 #include <SerialFlash.h>
 
-AudioInputI2S2           i2s2_1;         //xy=116,264
-AudioOutputI2S           i2s1;           //xy=442,259
-AudioAmplifier           amp1;           //xy=253,291
-AudioAmplifier           amp2;           //xy=253,291
-AudioConnection          patchCord1(i2s2_1, 0, amp1, 0);
-AudioConnection          patchCord2(amp1, 0, i2s1, 0);
-AudioConnection          patchCord3(i2s2_1, 1, amp1, 0);
-AudioConnection          patchCord4(amp1, 0, i2s1, 1);
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
+
+// GUItool: begin automatically generated code
+AudioInputI2S2           i2s2_1;         //xy=180,351
+AudioInputI2S            i2s1;           //xy=188,143
+AudioAmplifier           amp4;           //xy=330,404
+AudioAmplifier           amp3;           //xy=339,320
+AudioAmplifier           amp1;           //xy=341,119
+AudioAmplifier           amp2;           //xy=345,169
+AudioAnalyzeFFT1024      fft1024_1;      //xy=350,225
+AudioMixer4              mixer1;         //xy=537,243
+AudioOutputI2S           i2s2;           //xy=682,206
+AudioConnection          patchCord1(i2s2_1, 0, amp3, 0);
+AudioConnection          patchCord2(i2s2_1, 1, amp4, 0);
+AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
+AudioConnection          patchCord3(i2s1, 0, amp1, 0);
+AudioConnection          patchCord4(i2s1, 1, amp2, 0);
+AudioConnection          patchCord5(i2s1, 1, fft1024_1, 0);
+AudioConnection          patchCord6(amp4, 0, mixer1, 3);
+AudioConnection          patchCord7(amp3, 0, mixer1, 2);
+AudioConnection          patchCord8(amp1, 0, mixer1, 0);
+AudioConnection          patchCord9(amp2, 0, mixer1, 1);
+AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
+AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
+// GUItool: end automatically generated code
+
 
 uint32_t  mytime = 0;
 float amplitude = 1.0;
 float volume_floor = 0.0;
-int hold = 500;
+int hold = 10;
 int release = 100;
 int a1history=0;
-
-void setup() {
-  AudioMemory(20);
-    Serial.begin(115200);
-    a1history = analogRead(A1);
-}
 
 
 void release_rise() {
@@ -53,19 +69,35 @@ void wait(unsigned int milliseconds) {
       if (a1 > a1history + 50 || a1 < a1history - 50) {
         Serial.print("Knob (pin A1) = ");
         Serial.println(a1);
-        hold = a1;
+        hold = a1/10;
         a1history = a1;
       }
     }
 }
 
 
+void setup() {
+    AudioMemory(20);
+    Serial.begin(115200);
+    a1history = analogRead(A1);
+
+}
+
 void loop() {
-  // amp1.gain(amplitude);
+    // Serial.println(fft1024_1.available());
+    // Serial.println(fft1024_1.read(0,5));
+      // amp1.gain(amplitude);
   // amp2.gain(amplitude);
   //   delay(4000);
+  if (fft1024_1.read(0,5) > 0.08) {
+  duck();
 
-  // duck();
-  //   wait(250);
+  }
+
+    wait(250);
   // delay(2000);
+  // put your main code here, to run repeatedly:
+
 }
+
+
