@@ -9,6 +9,7 @@
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
+#include "AudioEffectCompressor2_F32.h"
 
 // GUItool: begin automatically generated code
 AudioInputI2S2           i2s2_1;         //xy=180,351
@@ -33,7 +34,6 @@ AudioConnection          patchCord9(amp2, 0, mixer1, 1);
 AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
 AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
 // GUItool: end automatically generated code
-
 
 uint32_t  mytime = 0;
 float amplitude = 1.0;
