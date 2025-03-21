@@ -9,6 +9,7 @@
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
+#include "effect_compressor.h"
 
 // GUItool: begin automatically generated code
 AudioInputI2S2           i2s2_1;         //xy=180,351
@@ -20,6 +21,7 @@ AudioAmplifier           amp2;           //xy=345,169
 AudioAnalyzeFFT1024      fft1024_1;      //xy=350,225
 AudioMixer4              mixer1;         //xy=537,243
 AudioOutputI2S           i2s2;           //xy=682,206
+AudioEffectCompressor    comp1;
 AudioConnection          patchCord1(i2s2_1, 0, amp3, 0);
 AudioConnection          patchCord2(i2s2_1, 1, amp4, 0);
 AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
@@ -30,8 +32,9 @@ AudioConnection          patchCord6(amp4, 0, mixer1, 3);
 AudioConnection          patchCord7(amp3, 0, mixer1, 2);
 AudioConnection          patchCord8(amp1, 0, mixer1, 0);
 AudioConnection          patchCord9(amp2, 0, mixer1, 1);
-AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
-AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
+// AudioConnection          patchCord10(mixer1, 0, comp1, 0);
+AudioConnection          patchCord11(mixer1, 0, i2s2, 0);
+AudioConnection          patchCord12(mixer1, 0, i2s2, 1);
 // GUItool: end automatically generated code
 
 
@@ -94,7 +97,7 @@ void loop() {
 
   }
 
-    wait(250);
+    // wait(250);
   // delay(2000);
   // put your main code here, to run repeatedly:
 
