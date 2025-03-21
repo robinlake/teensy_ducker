@@ -29,6 +29,7 @@ AudioAmplifier           amp2;           //xy=345,169
 AudioAnalyzeFFT1024      fft1024_1;      //xy=350,225
 AudioMixer4              mixer1;         //xy=537,243
 AudioOutputI2S           i2s2;           //xy=682,206
+AudioAnalyzeRMS          rms1;           //xy=686,291
 AudioConnection          patchCord1(i2s2_1, 0, amp3, 0);
 AudioConnection          patchCord2(i2s2_1, 1, amp4, 0);
 AudioConnection          patchCord3(i2s1, 0, amp1, 0);
@@ -39,26 +40,27 @@ AudioConnection          patchCord7(amp3, 0, mixer1, 2);
 AudioConnection          patchCord8(amp1, 0, mixer1, 0);
 AudioConnection          patchCord9(amp2, 0, mixer1, 1);
 AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
-AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
-AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
-//
-// // just testing if we can convert to float32, convert back, and still hear sound
+AudioConnection          patchCord122(mixer1, rms1);
+// AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
+// AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
+
+// just testing if we can convert to float32, convert back, and still hear sound
 // AudioConnection          patchCord10(mixer1, 0, int2Float1, 0);
 // AudioConnection          patchCord11(int2Float1, 0, float2Int1, 1);
 // AudioConnection          patchCord111(float2Int1, 0, i2s2, 1);
-// // end just testing
-//
+// end just testing
+
 
 // compressor connections
-// AudioConnection          patchCord10(mixer1, 0, int2Float1, 0);
-// AudioConnection          patchCord101(mixer1, 0, int2Float2, 0);
-// AudioConnection          patchCord11(int2Float1, 0, comp1, 1);
-// AudioConnection          patchCord111(int2Float2, 0, comp2, 1);
-// AudioConnection_F32     patchCord121(comp1, 0, float2Int1, 0); //Left.  makes Float connections between objects
-// AudioConnection_F32     patchCord13(comp2, 0, float2Int2, 0); //Right.  makes Float connections between objects
-// // AudioConnection          patchCord15(compressor1, 0, float2Int1, 1);
-// AudioConnection          patchCord14(float2Int1, 0, i2s2, 0);
-// AudioConnection          patchCord141(float2Int2, 0, i2s2, 1);
+AudioConnection          patchCord10(mixer1, 0, int2Float1, 0);
+AudioConnection          patchCord101(mixer1, 0, int2Float2, 0);
+AudioConnection          patchCord11(int2Float1, 0, comp1, 1);
+AudioConnection          patchCord111(int2Float2, 0, comp2, 1);
+AudioConnection_F32     patchCord121(comp1, 0, float2Int1, 0); //Left.  makes Float connections between objects
+AudioConnection_F32     patchCord13(comp2, 0, float2Int2, 0); //Right.  makes Float connections between objects
+// AudioConnection          patchCord15(compressor1, 0, float2Int1, 1);
+AudioConnection          patchCord14(float2Int1, 0, i2s2, 0);
+AudioConnection          patchCord141(float2Int2, 0, i2s2, 1);
 // end compressor connections
 
 // GUItool: end automatically generated code
@@ -128,12 +130,41 @@ void printCompressorState(Stream *s) {
   s->println();
 };
 
+void printMixerState(Stream *s) {
+  s->print("Current Mixer Gain = ");
+  s->print(rms1.read());
+  s->println("");
+}
+
+void printFloatState(Stream *s) {
+  s->print("Is Float 1 Active = ");
+  s->print(int2Float1.isActive());
+    s->print(int2Float2.isActive());
+      s->print(float2Int1.isActive());
+      s->print(float2Int2.isActive());
+  s->println("");
+    s->print("float2Int1  = ");
+          s->print(float2Int2.f32_memory_used);
+  s->println("");
+
+}
+
+// void setupFloats() {
+//   int2Float1.initialize_f32_memory();
+// }
+//
+void printFFTState(Stream *s) {
+    s->print("FFT Value = ");
+  s->print(fft1024_1.read(0,5));
+  s->println("");
+}
 
 void setup() {
     AudioMemory(20);
-    AudioMemory_F32(100);
+    AudioMemory_F32(16);
     Serial.begin(115200);
     a1history = analogRead(A1);
+    // setupFLoats();
 
     // compressor stuff
     // gain0.setGain_dB(-25.0f);  // Consider (-50.0f);
@@ -166,19 +197,22 @@ int prev_gain_dB = 0;
 unsigned long lastMemUpdate_millis = 0;
 void loop() {
     // Serial.println(fft1024_1.available());
-    Serial.println(fft1024_1.read(0,5));
       // amp1.gain(amplitude);
   // amp2.gain(amplitude);
   //   delay(4000);
-  if (fft1024_1.read(0,5) > 0.08) {
-  duck();
+  // if (fft1024_1.read(0,5) > 0.08) {
+  // duck();
 
-  }
+  // }
+  
 
-    wait(250);
+    // wait(450);
     curTime_millis = millis(); //what time is it right now
     printCompressorState(&Serial);
-  // delay(2000);
+    printMixerState(&Serial);
+    printFFTState(&Serial);
+    printFloatState(&Serial);
+  delay(1000);
   // put your main code here, to run repeatedly:
 
 }
