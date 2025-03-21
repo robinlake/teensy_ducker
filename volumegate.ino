@@ -9,20 +9,16 @@
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
-#include "AudioEffectCompressor2_F32.h"
+// #include "AudioEffectCompressor2_F32.h"
+#include "AudioEffectCompressor_F32.h"
 #include "AudioConvert_F32.h"
-#include "AudioEffectGain_F32.h"
-#include "AudioEffectGain_F32.h"
-#include "output_i2s_f32.h"
 // #include <OpenAudio_ArduinoLibrary.h>
 
 
-AudioEffectCompressor2_F32  compressor1; // Audio Compressor s
-AudioConvert_I16toF32     int2Float1 ;    //Converts Int16 to Float.  See class in AudioStream_F32.h
-AudioConvert_F32toI16     float2Int1;    //Converts Float to Int16.  See class in AudioStream_F32.h
-AudioEffectGain_F32         gain0;       // Sets volume sent to output
-AudioEffectGain_F32         gain1;       // Sets the same
-AudioOutputI2S_F32          i2sOut;
+// AudioEffectCompressor2_F32  compressor1; // Audio Compressor s
+AudioConvert_I16toF32     int2Float1, int2Float2;    //Converts Int16 to Float.  See class in AudioStream_F32.h
+AudioEffectCompressor_F32 comp1, comp2;
+AudioConvert_F32toI16     float2Int1, float2Int2;    //Converts Float to Int16.  See class in AudioStream_F32.h
 // GUItool: begin automatically generated code
 AudioInputI2S2           i2s2_1;         //xy=180,351
 AudioInputI2S            i2s1;           //xy=188,143
@@ -45,13 +41,24 @@ AudioConnection          patchCord9(amp2, 0, mixer1, 1);
 AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
 AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
 AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
+//
+// // just testing if we can convert to float32, convert back, and still hear sound
+// AudioConnection          patchCord10(mixer1, 0, int2Float1, 0);
+// AudioConnection          patchCord11(int2Float1, 0, float2Int1, 1);
+// AudioConnection          patchCord111(float2Int1, 0, i2s2, 1);
+// // end just testing
+//
 
 // compressor connections
 // AudioConnection          patchCord10(mixer1, 0, int2Float1, 0);
-// AudioConnection          patchCord11(int2Float1, 0, compressor1, 1);
-// AudioConnection          patchCord15(compressor1, 0, float2Int1, 1);
-// AudioConnection          patchCord13(float2Int1, 0, i2s2, 0);
-// AudioConnection          patchCord14(float2Int1, 0, i2s2, 1);
+// AudioConnection          patchCord101(mixer1, 0, int2Float2, 0);
+// AudioConnection          patchCord11(int2Float1, 0, comp1, 1);
+// AudioConnection          patchCord111(int2Float2, 0, comp2, 1);
+// AudioConnection_F32     patchCord121(comp1, 0, float2Int1, 0); //Left.  makes Float connections between objects
+// AudioConnection_F32     patchCord13(comp2, 0, float2Int2, 0); //Right.  makes Float connections between objects
+// // AudioConnection          patchCord15(compressor1, 0, float2Int1, 1);
+// AudioConnection          patchCord14(float2Int1, 0, i2s2, 0);
+// AudioConnection          patchCord141(float2Int2, 0, i2s2, 1);
 // end compressor connections
 
 // GUItool: end automatically generated code
@@ -96,6 +103,30 @@ void wait(unsigned int milliseconds) {
     }
 }
 
+//define a function to configure the left and right compressors
+void setupMyCompressors(boolean use_HP_filter, float knee_dBFS, float comp_ratio, float attack_sec, float release_sec) {
+  comp1.enableHPFilter(use_HP_filter);   comp2.enableHPFilter(use_HP_filter);
+  comp1.setThresh_dBFS(knee_dBFS);       comp2.setThresh_dBFS(knee_dBFS);
+  comp1.setCompressionRatio(comp_ratio); comp2.setCompressionRatio(comp_ratio);
+
+  float fs_Hz = AUDIO_SAMPLE_RATE;
+  comp1.setAttack_sec(attack_sec, fs_Hz);       comp2.setAttack_sec(attack_sec, fs_Hz);
+  comp1.setRelease_sec(release_sec, fs_Hz);     comp2.setRelease_sec(release_sec, fs_Hz);
+}
+
+void printCompressorState(Stream *s) {
+  s->print("Current Compressor: Pre-Gain (dB) = ");
+  s->print(comp1.getPreGain_dB());
+  s->print(", Level (dBFS) = ");
+  s->print(comp1.getCurrentLevel_dBFS());
+  s->print(", ");
+  s->print(comp2.getCurrentLevel_dBFS());
+  s->print(", Dynamic Gain L/R (dB) = ");
+  s->print(comp1.getCurrentGain_dB());
+  s->print(", ");
+  s->print(comp2.getCurrentGain_dB());
+  s->println();
+};
 
 
 void setup() {
@@ -105,17 +136,37 @@ void setup() {
     a1history = analogRead(A1);
 
     // compressor stuff
-    gain0.setGain_dB(-25.0f);  // Consider (-50.0f);
-    gain1.setGain_dB(-25.0f);  // Consider (-50.0f);
-    AudioEffectCompressor2_F32 *pc1 = &compressor1;
-    basicCompressorBegin(pc1, -5.0f, 2.0);
+    // gain0.setGain_dB(-25.0f);  // Consider (-50.0f);
+    // gain1.setGain_dB(-25.0f);  // Consider (-50.0f);
+    // AudioEffectCompressor2_F32 *pc1 = &compressor1;
+    // basicCompressorBegin(pc1, -5.0f, 2.0);
     // basicCompressorBegin(pc1, -45.0f, 8.0);
+      //choose the compressor parameters...note that preGain is set by the potentiometer in the main loop()
+    // boolean use_HP_filter = true; //enable the software HP filter to get rid of DC?
+    boolean use_HP_filter = false; //enable the software HP filter to get rid of DC?
+    float knee_dBFS, comp_ratio, attack_sec, release_sec;
+    if (false) {
+        Serial.println("Configuring Compressor for fast response for use as a limitter.");
+        knee_dBFS = -5.0f; comp_ratio = 2.0f;  attack_sec = 0.005f;  release_sec = 0.200f;
+        //knee_dBFS = -15.0f; comp_ratio = 5.0f;  attack_sec = 0.005f;  release_sec = 0.200f;
+    } else {
+        Serial.println("Configuring Compressor for slow response more like an automatic volume control.");
+        knee_dBFS = -50.0; comp_ratio = 5.0;  attack_sec = 1.0;  release_sec = 2.0;
+    }
+
+    //configure the left and right compressors with the desired settings
+    setupMyCompressors(use_HP_filter, knee_dBFS, comp_ratio, attack_sec, release_sec);
     // end compressor stuff
 }
 
+unsigned long updatePeriod_millis = 100; //how many milliseconds between updating gain reading?
+unsigned long lastUpdate_millis = 0;
+unsigned long curTime_millis = 0;
+int prev_gain_dB = 0;
+unsigned long lastMemUpdate_millis = 0;
 void loop() {
     // Serial.println(fft1024_1.available());
-    // Serial.println(fft1024_1.read(0,5));
+    Serial.println(fft1024_1.read(0,5));
       // amp1.gain(amplitude);
   // amp2.gain(amplitude);
   //   delay(4000);
@@ -125,6 +176,8 @@ void loop() {
   }
 
     wait(250);
+    curTime_millis = millis(); //what time is it right now
+    printCompressorState(&Serial);
   // delay(2000);
   // put your main code here, to run repeatedly:
 
