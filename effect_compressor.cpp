@@ -103,24 +103,24 @@ void AudioEffectCompressor::update(void)
   block = receiveWritable(0);
   if(block) {
     bp = block->data;
-    uint32_t tmp = delay_length/(num_chorus - 1) - 1;
-    for(int i = 0;i < AUDIO_BLOCK_SAMPLES;i++) {
-      l_circ_idx++;
-      if(l_circ_idx >= delay_length) {
-        l_circ_idx = 0;
-      }
-      l_delayline[l_circ_idx] = *bp;
-      sum = 0;
-      c_idx = l_circ_idx;
-      for(int k = 0; k < num_chorus; k++) {
-        sum += l_delayline[c_idx];
-        if(num_chorus > 1)c_idx -= tmp;
-        if(c_idx < 0) {
-          c_idx += delay_length;
-        }
-      }
-      *bp++ = sum/num_chorus;
-    }
+    // uint32_t tmp = delay_length/(num_chorus - 1) - 1;
+    // for(int i = 0;i < AUDIO_BLOCK_SAMPLES;i++) {
+    //   l_circ_idx++;
+    //   if(l_circ_idx >= delay_length) {
+    //     l_circ_idx = 0;
+    //   }
+    //   l_delayline[l_circ_idx] = *bp;
+    //   sum = 0;
+    //   c_idx = l_circ_idx;
+    //   for(int k = 0; k < num_chorus; k++) {
+    //     sum += l_delayline[c_idx];
+    //     if(num_chorus > 1)c_idx -= tmp;
+    //     if(c_idx < 0) {
+    //       c_idx += delay_length;
+    //     }
+    //   }
+    //   *bp++ = sum/num_chorus;
+    // }
 
     // transmit the block
     transmit(block,0);
