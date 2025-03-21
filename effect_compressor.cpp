@@ -62,6 +62,16 @@ Serial.println(")");
   return(true);
 }
 
+boolean AudioEffectCompressor::set_default_values(float compression_threshold, float compression_ratio, float compressor_attack, float compressor_release)
+{
+  threshold = compression_threshold;
+  ratio = compression_ratio;
+  attack_ms = compressor_attack;
+  release_ms = compressor_release;
+
+  return (true);
+}
+
 void AudioEffectCompressor::voices(int n_chorus)
 {
   num_chorus = n_chorus;

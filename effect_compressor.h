@@ -43,6 +43,7 @@ public:
   { }
 
   boolean begin(short *delayline,int delay_length,int n_chorus);
+  boolean set_default_values(float compression_threshold, float compression_ratio, float attack_ms, float release_ms);
   virtual void update(void);
   void voices(int n_chorus);
   
@@ -52,6 +53,10 @@ private:
   short l_circ_idx;
   int num_chorus;
   int delay_length;
+  float threshold;
+  float ratio;
+  float attack_ms;
+  float release_ms;
 };
 
 #endif
