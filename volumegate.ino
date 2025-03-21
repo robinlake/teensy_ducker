@@ -24,7 +24,7 @@ AudioOutputI2S           i2s2;           //xy=682,206
 AudioEffectCompressor    comp1;
 AudioConnection          patchCord1(i2s2_1, 0, amp3, 0);
 AudioConnection          patchCord2(i2s2_1, 1, amp4, 0);
-AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
+AudioConnection          patchCord121(i2s2_1, 1, fft1024_1, 0);
 AudioConnection          patchCord3(i2s1, 0, amp1, 0);
 AudioConnection          patchCord4(i2s1, 1, amp2, 0);
 AudioConnection          patchCord5(i2s1, 1, fft1024_1, 0);
@@ -32,9 +32,9 @@ AudioConnection          patchCord6(amp4, 0, mixer1, 3);
 AudioConnection          patchCord7(amp3, 0, mixer1, 2);
 AudioConnection          patchCord8(amp1, 0, mixer1, 0);
 AudioConnection          patchCord9(amp2, 0, mixer1, 1);
-// AudioConnection          patchCord10(mixer1, 0, comp1, 0);
-AudioConnection          patchCord11(mixer1, 0, i2s2, 0);
-AudioConnection          patchCord12(mixer1, 0, i2s2, 1);
+AudioConnection          patchCord10(mixer1, 0, comp1, 0);
+AudioConnection          patchCord11(comp1, 0, i2s2, 0);
+AudioConnection          patchCord12(comp1, 0, i2s2, 1);
 // GUItool: end automatically generated code
 
 
@@ -78,12 +78,21 @@ void wait(unsigned int milliseconds) {
     }
 }
 
+// Number of samples in each delay line
+#define CHORUS_DELAY_LENGTH (64*AUDIO_BLOCK_SAMPLES)
+// Allocate the delay lines for left and right channels
+short l_delayline[CHORUS_DELAY_LENGTH];
+int n_chorus = 2;
 
 void setup() {
     AudioMemory(20);
     Serial.begin(115200);
     a1history = analogRead(A1);
-
+    // comp1.begin(100,)
+  if(!comp1.begin(l_delayline,CHORUS_DELAY_LENGTH,n_chorus)) {
+    Serial.println("AudioEffectChorus - left channel begin failed");
+    while(1);
+  }
 }
 
 void loop() {
