@@ -10,7 +10,19 @@
 #include <SD.h>
 #include <SerialFlash.h>
 #include "AudioEffectCompressor2_F32.h"
+#include "AudioConvert_F32.h"
+#include "AudioEffectGain_F32.h"
+#include "AudioEffectGain_F32.h"
+#include "output_i2s_f32.h"
+// #include <OpenAudio_ArduinoLibrary.h>
 
+
+AudioEffectCompressor2_F32  compressor1; // Audio Compressor s
+AudioConvert_I16toF32     int2Float1 ;    //Converts Int16 to Float.  See class in AudioStream_F32.h
+AudioConvert_F32toI16     float2Int1;    //Converts Float to Int16.  See class in AudioStream_F32.h
+AudioEffectGain_F32         gain0;       // Sets volume sent to output
+AudioEffectGain_F32         gain1;       // Sets the same
+AudioOutputI2S_F32          i2sOut;
 // GUItool: begin automatically generated code
 AudioInputI2S2           i2s2_1;         //xy=180,351
 AudioInputI2S            i2s1;           //xy=188,143
@@ -23,7 +35,6 @@ AudioMixer4              mixer1;         //xy=537,243
 AudioOutputI2S           i2s2;           //xy=682,206
 AudioConnection          patchCord1(i2s2_1, 0, amp3, 0);
 AudioConnection          patchCord2(i2s2_1, 1, amp4, 0);
-AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
 AudioConnection          patchCord3(i2s1, 0, amp1, 0);
 AudioConnection          patchCord4(i2s1, 1, amp2, 0);
 AudioConnection          patchCord5(i2s1, 1, fft1024_1, 0);
@@ -31,8 +42,18 @@ AudioConnection          patchCord6(amp4, 0, mixer1, 3);
 AudioConnection          patchCord7(amp3, 0, mixer1, 2);
 AudioConnection          patchCord8(amp1, 0, mixer1, 0);
 AudioConnection          patchCord9(amp2, 0, mixer1, 1);
+AudioConnection          patchCord12(i2s2_1, 1, fft1024_1, 0);
 AudioConnection          patchCord10(mixer1, 0, i2s2, 0);
 AudioConnection          patchCord11(mixer1, 0, i2s2, 1);
+
+// compressor connections
+// AudioConnection          patchCord10(mixer1, 0, int2Float1, 0);
+// AudioConnection          patchCord11(int2Float1, 0, compressor1, 1);
+// AudioConnection          patchCord15(compressor1, 0, float2Int1, 1);
+// AudioConnection          patchCord13(float2Int1, 0, i2s2, 0);
+// AudioConnection          patchCord14(float2Int1, 0, i2s2, 1);
+// end compressor connections
+
 // GUItool: end automatically generated code
 
 uint32_t  mytime = 0;
@@ -76,11 +97,20 @@ void wait(unsigned int milliseconds) {
 }
 
 
+
 void setup() {
     AudioMemory(20);
+    AudioMemory_F32(100);
     Serial.begin(115200);
     a1history = analogRead(A1);
 
+    // compressor stuff
+    gain0.setGain_dB(-25.0f);  // Consider (-50.0f);
+    gain1.setGain_dB(-25.0f);  // Consider (-50.0f);
+    AudioEffectCompressor2_F32 *pc1 = &compressor1;
+    basicCompressorBegin(pc1, -5.0f, 2.0);
+    // basicCompressorBegin(pc1, -45.0f, 8.0);
+    // end compressor stuff
 }
 
 void loop() {
