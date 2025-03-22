@@ -23,7 +23,7 @@
 
 #include "effect_compressor.h"
 #include <Arduino.h>
-// #include <arm_math.h> //ARM DSP extensions.
+#include <arm_math.h> //ARM DSP extensions.
 // https://www.keil.com/pack/doc/CMSIS/DSP/html/index.html
 
 /******************************************************************/
