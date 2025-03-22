@@ -32,12 +32,9 @@
 // Written by Pete (El Supremo) Jan 2014
 // 140219 - correct storage class (not static)
 
-#define CHORUS_DELAY_PASSTHRU -1
-
 class AudioEffectCompressor : public AudioStream {
 public:
-  AudioEffectCompressor(void)
-      : AudioStream(1, inputQueueArray), num_chorus(2) {}
+  AudioEffectCompressor(void) : AudioStream(1, inputQueueArray) {}
 
   bool begin();
   bool set_default_values(float compression_threshold, float compression_ratio,
@@ -50,7 +47,6 @@ public:
                                    audio_block_t *audio_level_dB_block);
   void calcSmoothedGain_dB(audio_block_t *inst_targ_gain_dB_block,
                            audio_block_t *gain_dB_block);
-  void voices(int n_chorus);
 
 private:
   audio_block_t *inputQueueArray[1];

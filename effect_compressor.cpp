@@ -26,13 +26,7 @@
 
 /******************************************************************/
 
-//                A u d i o E f f e c t C h o r u s
-// Written by Pete (El Supremo) Jan 2014
-// 140529 - change to handle mono stream - change modify() to voices()
-// 140219 - correct storage class (not static)
-
-// bool AudioEffectCompressor::begin(short *delayline, int d_length,
-//                                   int n_chorus) {
+//                A u d i o E f f e c t C o m p r e s s o r
 
 bool AudioEffectCompressor::begin() {
 #if 0
@@ -45,8 +39,6 @@ Serial.println(")");
 
   return (true);
 }
-
-void AudioEffectCompressor::voices(int n_chorus) { num_chorus = n_chorus; }
 
 /*
  * Actual compressor code
