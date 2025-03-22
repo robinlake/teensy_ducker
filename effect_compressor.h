@@ -23,7 +23,7 @@
 #ifndef effect_compressor_h_
 #define effect_compressor_h_
 
-#include <Arduino.h>     // github.com/PaulStoffregen/cores/blob/master/teensy4/Arduino.h
+#include <Arduino.h> // github.com/PaulStoffregen/cores/blob/master/teensy4/Arduino.h
 #include <AudioStream.h> // github.com/PaulStoffregen/cores/blob/master/teensy4/AudioStream.h
 
 /******************************************************************/
@@ -34,22 +34,23 @@
 
 #define CHORUS_DELAY_PASSTHRU -1
 
-class AudioEffectCompressor : 
-public AudioStream
-{
+class AudioEffectCompressor : public AudioStream {
 public:
-  AudioEffectCompressor(void):
-  AudioStream(1,inputQueueArray), num_chorus(2)
-  { }
+  AudioEffectCompressor(void)
+      : AudioStream(1, inputQueueArray), num_chorus(2) {}
 
-  boolean begin(short *delayline,int delay_length,int n_chorus);
-  boolean set_default_values(float compression_threshold, float compression_ratio, float attack_ms, float release_ms);
+  bool begin(short *delayline, int delay_length, int n_chorus);
+  bool set_default_values(float compression_threshold, float compression_ratio,
+                          float attack_ms, float release_ms);
   virtual void update(void);
   virtual void realupdate(void);
-  void calcAudioLevel_dB(audio_block_t *audio_block, audio_block_t *level_dB_block); 
-  void calcGain(audio_block_t *gain_block, audio_block_t *level_dB_block); 
+  void calcAudioLevel_dB(audio_block_t *audio_block,
+                         audio_block_t *audio_level_dB_block);
+  void calcGain(audio_block_t *gain_block, audio_block_t *level_dB_block);
+  void calcInstantaneousTargetGain(audio_block_t *inst_targ_gain_dB_block,
+                                   audio_block_t *audio_level_dB_block);
   void voices(int n_chorus);
-  
+
 private:
   audio_block_t *inputQueueArray[1];
   short *l_delayline;
