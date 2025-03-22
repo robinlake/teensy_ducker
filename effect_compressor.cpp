@@ -128,10 +128,10 @@ void AudioEffectCompressor::update(void) {
 /*
  * Actual compressor code
  */
-boolean AudioEffectCompressor::set_default_values(float compression_threshold,
-                                                  float compression_ratio,
-                                                  float compressor_attack,
-                                                  float compressor_release) {
+bool AudioEffectCompressor::set_default_values(float compression_threshold,
+                                               float compression_ratio,
+                                               float compressor_attack,
+                                               float compressor_release) {
   threshold = compression_threshold;
   ratio = compression_ratio;
   attack_ms = compressor_attack;
@@ -184,5 +184,10 @@ void AudioEffectCompressor::calcGain(audio_block_t *gain_block,
 void AudioEffectCompressor::calcInstantaneousTargetGain(
     audio_block_t *audio_level_dB_block,
     audio_block_t *inst_targ_gain_dB_block) {
+  return;
+}
+// target gain level through time
+void AudioEffectCompressor::calcSmoothedGain_dB(
+    audio_block_t *inst_targ_gain_dB_block, audio_block_t *gain_dB_block) {
   return;
 }

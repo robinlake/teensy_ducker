@@ -49,6 +49,8 @@ public:
   void calcGain(audio_block_t *gain_block, audio_block_t *level_dB_block);
   void calcInstantaneousTargetGain(audio_block_t *inst_targ_gain_dB_block,
                                    audio_block_t *audio_level_dB_block);
+  void calcSmoothedGain_dB(audio_block_t *inst_targ_gain_dB_block,
+                           audio_block_t *gain_dB_block);
   void voices(int n_chorus);
 
 private:
