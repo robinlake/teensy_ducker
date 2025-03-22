@@ -39,7 +39,7 @@ public:
   AudioEffectCompressor(void)
       : AudioStream(1, inputQueueArray), num_chorus(2) {}
 
-  bool begin(short *delayline, int delay_length, int n_chorus);
+  bool begin();
   bool set_default_values(float compression_threshold, float compression_ratio,
                           float attack_ms, float release_ms);
   virtual void update(void);

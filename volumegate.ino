@@ -78,21 +78,11 @@ void wait(unsigned int milliseconds) {
     }
 }
 
-// Number of samples in each delay line
-#define CHORUS_DELAY_LENGTH (64*AUDIO_BLOCK_SAMPLES)
-// Allocate the delay lines for left and right channels
-short l_delayline[CHORUS_DELAY_LENGTH];
-int n_chorus = 2;
-
 void setup() {
     AudioMemory(20);
     Serial.begin(115200);
     a1history = analogRead(A1);
-    // comp1.begin(100,)
-  if(!comp1.begin(l_delayline,CHORUS_DELAY_LENGTH,n_chorus)) {
-    Serial.println("AudioEffectChorus - left channel begin failed");
-    while(1);
-  }
+    comp1.begin();
 }
 
 void loop() {
