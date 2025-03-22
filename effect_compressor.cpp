@@ -23,6 +23,8 @@
 
 #include "effect_compressor.h"
 #include <Arduino.h>
+// #include <arm_math.h> //ARM DSP extensions.
+// https://www.keil.com/pack/doc/CMSIS/DSP/html/index.html
 
 /******************************************************************/
 
@@ -43,6 +45,33 @@ Serial.println(")");
 /*
  * Actual compressor code
  */
+
+// // settings
+// float attack_sec, release_sec, level_lp_sec;
+// float thresh_dBFS =
+//     0.0; // threshold for compression, relative to digital full scale
+// float thresh_pow_FS = 1.0f; // same as above, but not in dB
+// void setThreshPow(float t_pow) {
+//   thresh_pow_FS = t_pow;
+//   updateThresholdAndCompRatioConstants();
+// }
+// float comp_ratio = 1.0; // compression ratio
+// float pre_gain =
+//     -1.0; // gain to apply before the compression.  negative value disables
+// bool use_HP_prefilter;
+// //
+// // private parameters related to gain calculation
+// float attack_const, release_const,
+//     level_lp_const; // used in calcGain().  set by setAttack_sec() and
+//                     // setRelease_sec();
+// float comp_ratio_const,
+//     thresh_pow_FS_wCR; // used in calcGain();  set in
+//                        // updateThresholdAndCompRatioConstants()
+// void updateThresholdAndCompRatioConstants(void) {
+//   comp_ratio_const = 1.0f - (1.0f / comp_ratio);
+//   thresh_pow_FS_wCR = powf(thresh_pow_FS, comp_ratio_const);
+// }
+//
 bool AudioEffectCompressor::set_default_values(float compression_threshold,
                                                float compression_ratio,
                                                float compressor_attack,
@@ -109,3 +138,15 @@ void AudioEffectCompressor::calcSmoothedGain_dB(
     audio_block_t *inst_targ_gain_dB_block, audio_block_t *gain_dB_block) {
   return;
 }
+
+// // methods to return information about this module
+// float getPreGain_dB(void) { return 20.0 * log10f_approx(pre_gain); }
+// float getAttack_sec(void) { return attack_sec; }
+// float getRelease_sec(void) { return release_sec; }
+// float getLevelTimeConst_sec(void) { return level_lp_sec; }
+// float getThresh_dBFS(void) { return thresh_dBFS; }
+// float getCompressionRatio(void) { return comp_ratio; }
+// float getCurrentLevel_dBFS(void) {
+//   return 10.0 * log10f_approx(prev_level_lp_pow);
+// }
+// float getCurrentGain_dB(void) { return prev_gain_dB; }
