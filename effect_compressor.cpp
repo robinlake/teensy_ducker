@@ -48,20 +48,6 @@ Serial.println(")");
 
 void AudioEffectCompressor::voices(int n_chorus) { num_chorus = n_chorus; }
 
-// int last_idx = 0;
-void AudioEffectCompressor::update(void) {
-  audio_block_t *block;
-  short *bp;
-  block = receiveWritable(0);
-  if (block) {
-    bp = block->data;
-
-    // transmit the block
-    transmit(block, 0);
-    release(block);
-  }
-}
-
 /*
  * Actual compressor code
  */
@@ -77,21 +63,24 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
   return (true);
 }
 
-void AudioEffectCompressor::realupdate(void) {
+void AudioEffectCompressor::update(void) {
   audio_block_t *block;
+  short *bp;
   block = receiveWritable(0);
 
   if (!block)
     return;
 
-  // calculate audio level (ie, a smoothed version of the signal power)
-  audio_block_t *audio_level_dB_block = AudioStream::allocate();
-  calcAudioLevel_dB(block, audio_level_dB_block);
-
-  // compute the desired gain based on the observed audio level
-  audio_block_t *gain_block = AudioStream::allocate();
-  calcGain(audio_level_dB_block, gain_block);
-
+  bp = block->data;
+  //
+  // // calculate audio level (ie, a smoothed version of the signal power)
+  // audio_block_t *audio_level_dB_block = AudioStream::allocate();
+  // calcAudioLevel_dB(block, audio_level_dB_block);
+  //
+  // // compute the desired gain based on the observed audio level
+  // audio_block_t *gain_block = AudioStream::allocate();
+  // calcGain(audio_level_dB_block, gain_block);
+  //
   // transmit the block and release memory
   transmit(block, 0);
   release(block);
