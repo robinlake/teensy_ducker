@@ -45,6 +45,9 @@ public:
   boolean begin(short *delayline,int delay_length,int n_chorus);
   boolean set_default_values(float compression_threshold, float compression_ratio, float attack_ms, float release_ms);
   virtual void update(void);
+  virtual void realupdate(void);
+  void calcAudioLevel_dB(audio_block_t *audio_block, audio_block_t *level_dB_block); 
+  void calcGain(audio_block_t *gain_block, audio_block_t *level_dB_block); 
   void voices(int n_chorus);
   
 private:
