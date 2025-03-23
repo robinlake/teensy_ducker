@@ -86,6 +86,13 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
   return (true);
 }
 
+// HP filter state-related variables
+//  arm_biquad_casd_df1_inst_f32 hp_filt_struct;
+arm_biquad_casd_df1_inst_f16 hp_filt_struct;
+static const uint8_t hp_nstages = 1;
+float16_t hp_coeff[5 * hp_nstages] = {
+    1.0, 0.0, 0.0, 0.0, 0.0}; // no filtering. actual filter coeff set later
+float_t hp_state[4 * hp_nstages];
 void setHPFilterCoeff(void) {
   // https://www.keil.com/pack/doc/CMSIS/DSP/html/group__BiquadCascadeDF1.html#ga8e73b69a788e681a61bccc8959d823c5
   // Use matlab to compute the coeff for HP at 20Hz:
@@ -208,7 +215,10 @@ void resetStates(void) {
   prev_gain_dB = 0.0f;
 
   // initialize the HP filter.  (This also resets the filter states,)
-      arm_biquad_cascade_df1_init_f32(&hp_filt_struct, hp_nstagehttps://www.keil.com/pack/doc/CMSIS/DSP/html/index.htmls, hp_coeff, hp_state);
+  // arm_biquad_cascade_df1_init_f32(&hp_filt_struct,
+  // hp_nstagehttps://www.keil.com/pack/doc/CMSIS/DSP/html/index.htmls,
+  // hp_coeff, hp_state);
+  arm_biquad_cascade_df1_init_f16(&hp_filt_struct, hp_nstage);
 }
 
 // methods to return information about this module
