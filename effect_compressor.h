@@ -25,6 +25,7 @@
 
 #include <Arduino.h> // github.com/PaulStoffregen/cores/blob/master/teensy4/Arduino.h
 #include <AudioStream.h> // github.com/PaulStoffregen/cores/blob/master/teensy4/AudioStream.h
+#include <arm_math.h> //ARM DSP extensions.  https://www.keil.com/pack/doc/CMSIS/DSP/html/index.html
 
 /******************************************************************/
 
@@ -47,6 +48,7 @@ public:
                                    audio_block_t *audio_level_dB_block);
   void calcSmoothedGain_dB(audio_block_t *inst_targ_gain_dB_block,
                            audio_block_t *gain_dB_block);
+  static float pow10f(float x);
 
 private:
   audio_block_t *inputQueueArray[1];
@@ -58,6 +60,18 @@ private:
   float ratio;
   float attack_ms;
   float release_ms;
+  float prev_level_lp_pow = 1.0;
+  float prev_gain_dB = 0.0; // last gain^2 used
+                            // HP filter state-related variables
+  // arm_biquad_casd_df1_inst_f32 hp_filt_struct;
+  static const uint8_t hp_nstages = 1;
+  float hp_coeff[5 * hp_nstages] = {
+      1.0, 0.0, 0.0, 0.0, 0.0}; // no filtering. actual filter coeff set later
+  float hp_state[4 * hp_nstages];
+  void updateThresholdAndCompRatioConstants(void);
+  void setHPFilterCoeff(void);
+  void setThreshPow(float t_pow);
+  static float log2f_approx(float X);
 };
 
 #endif
