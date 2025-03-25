@@ -78,26 +78,28 @@ float calculate_volume_db(audio_block_t *block) {
   // Serial.println('calculate volume');
   short *data;
   data = block->data;
-  int total = 0;
+  float total = 0;
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-    short datum = data[i];
+    int datum = data[i];
     // calculate the instantaneous signal power (square the signal)
 
-    Serial.print("level before squaring = ");
-    Serial.println(datum);
+    // Serial.print("level before squaring = ");
+    // Serial.println(datum);
     datum = pow(datum, 2);
+    datum = sqrt(datum);
 
     // convert signal power to dB
     // datum = log10f(datum);
 
-    Serial.print("level = ");
-    Serial.println(datum);
-    Serial.print("dBFS level = ");
-    Serial.println(dBFS(datum));
+    // Serial.print("level = ");
+    // Serial.println(datum);
+    // Serial.print("dBFS level = ");
+    // Serial.println(dBFS(datum));
     datum = dBFS(datum);
     total += datum;
   }
-  int average = total / AUDIO_BLOCK_SAMPLES;
+  float sample_count = AUDIO_BLOCK_SAMPLES;
+  float average = total / sample_count;
   // Serial.print("total = ");
   // Serial.println(total);
   Serial.print("average = ");
@@ -118,7 +120,7 @@ void AudioEffectCompressor::update(void) {
     return;
 
   bp = block->data;
-  if (count % 1000 == 0) {
+  if (count % 100 == 0) {
     float volume_db = calculate_volume_db(block);
   }
 
