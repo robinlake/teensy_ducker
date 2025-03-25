@@ -63,7 +63,7 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
 
 int max_sample = 32767;
 
-float dBFS(short sample) {
+float dBFS(int sample) {
   float output = sample;
   if (output == max_sample) {
     output = 0.0f;
@@ -73,56 +73,45 @@ float dBFS(short sample) {
   return output;
 }
 
+// int count = 0;
 // returns average level for given audio block
 float calculate_volume_db(audio_block_t *block) {
-  // Serial.println('calculate volume');
+  // count++;
+  // if (count >= 10000) {
+  //   count = 0;
+  // }
   short *data;
   data = block->data;
-  float total = 0;
+  float total = 0.0f;
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     int datum = data[i];
     // calculate the instantaneous signal power (square the signal)
-
-    // Serial.print("level before squaring = ");
-    // Serial.println(datum);
     datum = pow(datum, 2);
     datum = sqrt(datum);
-
-    // convert signal power to dB
-    // datum = log10f(datum);
-
-    // Serial.print("level = ");
-    // Serial.println(datum);
-    // Serial.print("dBFS level = ");
-    // Serial.println(dBFS(datum));
     datum = dBFS(datum);
     total += datum;
   }
   float sample_count = AUDIO_BLOCK_SAMPLES;
   float average = total / sample_count;
+  // if (count % 100 == 0) {
   // Serial.print("total = ");
   // Serial.println(total);
-  Serial.print("average = ");
-  Serial.println(average);
+  // Serial.print("average = ");
+  // Serial.println(average);
+  // }
+
   return average;
 }
-int count = 0;
 void AudioEffectCompressor::update(void) {
   audio_block_t *block;
   short *bp;
   block = receiveWritable(0);
-  count++;
-  if (count >= 10000) {
-    count = 0;
-  }
 
   if (!block)
     return;
 
   bp = block->data;
-  if (count % 100 == 0) {
-    float volume_db = calculate_volume_db(block);
-  }
+  float volume_db = calculate_volume_db(block);
 
   // transmit the block and release memory
   transmit(block, 0);
