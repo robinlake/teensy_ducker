@@ -178,15 +178,31 @@ float calculate_average_volume_db(audio_block_t *block) {
 }
 
 void compress_block(audio_block_t *block) {
-  short *data;
-  data = block->data;
-
+  short *samples;
+  samples = block->data;
+  short original_samples[AUDIO_BLOCK_SAMPLES];
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-    int sample = data[i];
-    float sample_dbfs = sample_to_dBFS(sample);
-    // todo: apply compression ratio to sample_dbfs
-    int compressed_sample = dBFS_to_sample(sample_dbfs);
-    data[i] = compressed_sample;
+    original_samples[i] = samples[i];
+    int sample = samples[i];
+    // float sample_dbfs = sample_to_dBFS(sample);
+    // // todo: apply compression ratio to sample_dbfs
+    // short compressed_sample = dBFS_to_sample(sample_dbfs);
+    // samples[i] = compressed_sample;
+  }
+
+  if (count % 1000 == 0) {
+    Serial.print("uncompressed values = ");
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+      Serial.print(original_samples[i]);
+      Serial.print(", ");
+    }
+    Serial.println("");
+    Serial.print("compressed values = ");
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+      Serial.print(samples[i]);
+      Serial.print(", ");
+    }
+    Serial.println("");
   }
 }
 void AudioEffectCompressor::update(void) {
@@ -220,13 +236,13 @@ void AudioEffectCompressor::update(void) {
 
     if (count % 1000 == 0) {
       Serial.print("block samples: ");
-      for (int i = AUDIO_BLOCK_SAMPLES - 1; i >= 0; i--) {
+      for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
         Serial.print(block->data[i]);
         Serial.print(", ");
       }
       Serial.println("");
       Serial.print("compressed block samples: ");
-      for (int i = AUDIO_BLOCK_SAMPLES - 1; i >= 0; i--) {
+      for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
         Serial.print(compressed_block->data[i]);
         Serial.print(", ");
       }
