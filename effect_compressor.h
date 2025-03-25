@@ -41,37 +41,14 @@ public:
   bool set_default_values(float compression_threshold, float compression_ratio,
                           float attack_ms, float release_ms);
   virtual void update(void);
-  void calcAudioLevel_dB(audio_block_t *audio_block,
-                         audio_block_t *audio_level_dB_block);
-  void calcGain(audio_block_t *gain_block, audio_block_t *level_dB_block);
-  void calcInstantaneousTargetGain(audio_block_t *inst_targ_gain_dB_block,
-                                   audio_block_t *audio_level_dB_block);
-  void calcSmoothedGain_dB(audio_block_t *inst_targ_gain_dB_block,
-                           audio_block_t *gain_dB_block);
   static float pow10f(float x);
 
 private:
   audio_block_t *inputQueueArray[1];
-  short *l_delayline;
-  short l_circ_idx;
-  int num_chorus;
-  int delay_length;
-  float threshold;
-  float ratio;
+  float compression_threshold;
+  float compression_ratio;
   float attack_ms;
   float release_ms;
-  float prev_level_lp_pow = 1.0;
-  float prev_gain_dB = 0.0; // last gain^2 used
-                            // HP filter state-related variables
-  // arm_biquad_casd_df1_inst_f32 hp_filt_struct;
-  static const uint8_t hp_nstages = 1;
-  float hp_coeff[5 * hp_nstages] = {
-      1.0, 0.0, 0.0, 0.0, 0.0}; // no filtering. actual filter coeff set later
-  float hp_state[4 * hp_nstages];
-  void updateThresholdAndCompRatioConstants(void);
-  void setHPFilterCoeff(void);
-  void setThreshPow(float t_pow);
-  static float log2f_approx(float X);
 };
 
 #endif
