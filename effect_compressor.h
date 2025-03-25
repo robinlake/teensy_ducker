@@ -50,6 +50,7 @@ private:
   float release_ms;
   // from audio library analyze_peak.h
   int max_sample = 32767;
+  int min_sample = -32768;
   float dBFS(short sample);
   // void allocate(int memory);
   // audio_block_t allocate() = AudioStream::allocate();
