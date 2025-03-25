@@ -49,6 +49,9 @@ private:
   float compression_ratio;
   float attack_ms;
   float release_ms;
+  // from audio library analyze_peak.h
+  int max_sample = 32767;
+  float dBFS(short sample);
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "effect_compressor.h"
 #include <Arduino.h>
 #include <arm_math.h> //ARM DSP extensions.
+#include <math.h>
 // https://www.keil.com/pack/doc/CMSIS/DSP/html/index.html
 
 /******************************************************************/
@@ -60,6 +61,18 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
   return (true);
 }
 
+int max_sample = 32767;
+
+float dBFS(short sample) {
+  float output = sample;
+  if (output == max_sample) {
+    output = 0.0f;
+    return output;
+  }
+  output = 20 * log10f(output / max_sample);
+  return output;
+}
+
 // returns average level for given audio block
 float calculate_volume_db(audio_block_t *block) {
   // Serial.println('calculate volume');
@@ -69,13 +82,19 @@ float calculate_volume_db(audio_block_t *block) {
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     short datum = data[i];
     // calculate the instantaneous signal power (square the signal)
-    datum *= datum;
+
+    Serial.print("level before squaring = ");
+    Serial.println(datum);
+    datum = pow(datum, 2);
 
     // convert signal power to dB
-    datum = log10f(datum);
+    // datum = log10f(datum);
 
     Serial.print("level = ");
     Serial.println(datum);
+    Serial.print("dBFS level = ");
+    Serial.println(dBFS(datum));
+    datum = dBFS(datum);
     total += datum;
   }
   int average = total / AUDIO_BLOCK_SAMPLES;
@@ -85,17 +104,23 @@ float calculate_volume_db(audio_block_t *block) {
   Serial.println(average);
   return average;
 }
-
+int count = 0;
 void AudioEffectCompressor::update(void) {
   audio_block_t *block;
   short *bp;
   block = receiveWritable(0);
+  count++;
+  if (count >= 10000) {
+    count = 0;
+  }
 
   if (!block)
     return;
 
   bp = block->data;
-  float volume_db = calculate_volume_db(block);
+  if (count % 1000 == 0) {
+    float volume_db = calculate_volume_db(block);
+  }
 
   // transmit the block and release memory
   transmit(block, 0);
