@@ -40,6 +40,9 @@ Serial.print(n_chorus);
 Serial.println(")");
 #endif
 
+  Serial.println("begin compressor");
+  set_default_values(-30.0f, 3.0f, 10.0f, 30.0f);
+
   return (true);
 }
 
@@ -53,10 +56,11 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
                                                float compression_ratio,
                                                float attack_ms,
                                                float release_ms) {
-  compression_threshold = compression_threshold;
-  compression_ratio = compression_ratio;
-  attack_ms = attack_ms;
-  release_ms = release_ms;
+  this->compression_threshold = compression_threshold;
+  this->compression_ratio = compression_ratio;
+  this->attack_ms = attack_ms;
+  this->release_ms = release_ms;
+  Serial.println("setting default values");
 
   return (true);
 }
@@ -73,13 +77,13 @@ float dBFS(int sample) {
   return output;
 }
 
-// int count = 0;
+int count = 0;
 // returns average level for given audio block
 float calculate_volume_db(audio_block_t *block) {
-  // count++;
-  // if (count >= 10000) {
-  //   count = 0;
-  // }
+  count++;
+  if (count >= 10000) {
+    count = 0;
+  }
   short *data;
   data = block->data;
   float total = 0.0f;
@@ -94,10 +98,10 @@ float calculate_volume_db(audio_block_t *block) {
   float sample_count = AUDIO_BLOCK_SAMPLES;
   float average = total / sample_count;
   // if (count % 100 == 0) {
-  // Serial.print("total = ");
-  // Serial.println(total);
-  // Serial.print("average = ");
-  // Serial.println(average);
+  //   Serial.print("total = ");
+  //   Serial.println(total);
+  //   Serial.print("average = ");
+  //   Serial.println(average);
   // }
 
   return average;
@@ -112,6 +116,16 @@ void AudioEffectCompressor::update(void) {
 
   bp = block->data;
   float volume_db = calculate_volume_db(block);
+  // if (count % 100 == 0) {
+  //   Serial.print("level = ");
+  //   Serial.println(volume_db);
+  //   Serial.print("threshold = ");
+  //   Serial.println(compression_threshold);
+  // }
+  if (volume_db > compression_threshold) {
+
+    // Serial.println("trigger compression");
+  }
 
   // transmit the block and release memory
   transmit(block, 0);
