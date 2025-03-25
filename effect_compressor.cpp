@@ -71,47 +71,47 @@ int min_sample = -32768;
 // they are very negative numbers
 // temporary fix: set to minimum value for these numbers
 float min_dBFS = -160.0f;
-// float sample_to_dBFS(int sample) {
-//   float output;
-//   if (sample == 0) {
-//     output = 0.0f;
-//     return output;
-//   } else if (sample > 0) {
-//     if (sample == max_sample) {
-//       output = 0.0f;
-//       return output;
-//     }
-//     output = 20 * log10f(sample / max_sample);
-//     if (output < min_dBFS) {
-//       return min_dBFS;
-//     }
-//     return output;
-//   } else {
-//     if (sample == min_sample) {
-//       output = 0.0f;
-//       return output;
-//     }
-//     output = 20.0f * log10f(sample * -1.0f / min_sample * -1.0f);
-//     if (output < min_dBFS) {
-//       return min_dBFS;
-//     }
-//     return output;
-//   }
-// }
-
 float sample_to_dBFS(int sample) {
-
   float output = sample;
-  if (output == max_sample) {
+  if (sample == 0) {
     output = 0.0f;
     return output;
+  } else if (sample > 0) {
+    if (sample == max_sample) {
+      output = 0.0f;
+      return output;
+    }
+    output = 20 * log10f(output / max_sample);
+    if (output < min_dBFS) {
+      return min_dBFS;
+    }
+    return output;
+  } else {
+    if (sample == min_sample) {
+      output = 0.0f;
+      return output;
+    }
+    output = 20.0f * log10f((output * -1.0f) / (min_sample * -1.0f));
+    if (output < min_dBFS) {
+      return min_dBFS;
+    }
+    return output;
   }
-  output = 20 * log10f(output / max_sample);
-  if (output < min_dBFS) {
-    return min_dBFS;
-  }
-  return output;
 }
+
+// float sample_to_dBFS(int sample) {
+//
+//   float output = sample;
+//   if (output == max_sample) {
+//     output = 0.0f;
+//     return output;
+//   }
+//   output = 20 * log10f(output / max_sample);
+//   if (output < min_dBFS) {
+//     return min_dBFS;
+//   }
+//   return output;
+// }
 
 // dBFS = 20 * log(A / Amax)
 // dBFS / 20 = log(A / Amax)
@@ -148,6 +148,7 @@ float calculate_average_volume_db(audio_block_t *block) {
   short *data;
   data = block->data;
   float total = 0.0f;
+  float dBFS_values[AUDIO_BLOCK_SAMPLES];
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     int datum = data[i];
 
@@ -156,10 +157,17 @@ float calculate_average_volume_db(audio_block_t *block) {
     datum = sqrt(datum);
     datum = sample_to_dBFS(datum);
     total += datum;
+    dBFS_values[i] = datum;
   }
   float sample_count = AUDIO_BLOCK_SAMPLES;
   float average = total / sample_count;
   if (count % 1000 == 0) {
+    Serial.print("dBFS values = ");
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+      Serial.print(dBFS_values[i]);
+      Serial.print(", ");
+    }
+    Serial.println("");
     Serial.print("total = ");
     Serial.println(total);
     Serial.print("average = ");
