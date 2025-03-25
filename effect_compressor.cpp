@@ -1,6 +1,6 @@
 
 /* Audio Library for Teensy 3.X
- * Copyright (c) 2014, Pete (El Supremo)
+ * Copyright (c) 2025, Lily Lake
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,24 +31,17 @@
 
 //                A u d i o E f f e c t C o m p r e s s o r
 
-bool AudioEffectCompressor::begin() {
-#if 0
-Serial.print("AudioEffectCompressor.begin(Chorus delay line length = ");
-Serial.print(d_length);
-Serial.print(", n_chorus = ");
-Serial.print(n_chorus);
-Serial.println(")");
-#endif
+bool AudioEffectCompressor::begin(float compression_threshold = -20.0f,
+                                  float compression_ratio = 3.0f,
+                                  float attack_ms = 1.0f,
+                                  float release_ms = 30.0f) {
 
   Serial.println("begin compressor");
-  set_default_values(-50.0f, 3.0f, 10.0f, 30.0f);
+  set_default_values(compression_threshold, compression_ratio, attack_ms,
+                     release_ms);
 
   return (true);
 }
-
-/*
- * Actual compressor code
- */
 
 float compression_threshold, compression_ratio, attack_ms, release_ms;
 
@@ -60,16 +53,6 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
   this->compression_ratio = compression_ratio;
   this->attack_ms = attack_ms;
   this->release_ms = release_ms;
-  Serial.println("setting default values");
-  Serial.println("Default values: ");
-  Serial.print("compression_threshold = ");
-  Serial.println(this->compression_threshold);
-  Serial.print("compression_ratio = ");
-  Serial.println(this->compression_ratio);
-  Serial.print("attack_ms = ");
-  Serial.println(this->attack_ms);
-  Serial.print("release_ms = ");
-  Serial.println(this->release_ms);
 
   return (true);
 }
@@ -108,20 +91,6 @@ float sample_to_dBFS(int sample) {
     return output;
   }
 }
-
-// float sample_to_dBFS(int sample) {
-//
-//   float output = sample;
-//   if (output == max_sample) {
-//     output = 0.0f;
-//     return output;
-//   }
-//   output = 20 * log10f(output / max_sample);
-//   if (output < min_dBFS) {
-//     return min_dBFS;
-//   }
-//   return output;
-// }
 
 // dBFS = 20 * log(A / Amax)
 // dBFS / 20 = log(A / Amax)
@@ -190,29 +159,44 @@ float calculate_average_volume_db(audio_block_t *block) {
   return average;
 }
 
+int ms_to_samples(float ms) {
+  float ms_per_sample = 2.9f / AUDIO_BLOCK_SAMPLES;
+  int samples = ms * ms_per_sample;
+  return samples;
+}
+
+int attack_samples_elapsed = 0;
+int release_samples_elapsed = 0;
+
+float AudioEffectCompressor::apply_attack_ratio(float difference) {
+  int attack_samples = ms_to_samples(this->attack_ms);
+  float ratio = attack_samples_elapsed / attack_samples;
+  return difference * ratio;
+}
+
 float AudioEffectCompressor::compress_dBFS(float dBFS) {
-  // if (dBFS < compression_threshold) {
-  //   return dBFS;
-  // }
+  if (dBFS < compression_threshold) {
+    return dBFS;
+  }
   // amount that signal exceeds threshold
   float difference = dBFS - this->compression_threshold;
   float gain = difference / this->compression_ratio;
-  // float output = dBFS - reduction;
+  gain = apply_attack_ratio(gain);
   float output = this->compression_threshold + gain;
-  if (count % 1000 == 0) {
-    Serial.print("compression_threshold = ");
-    Serial.println(compression_threshold);
-    Serial.print("compression_ratio = ");
-    Serial.println(compression_ratio);
-    Serial.print("dBFS value = ");
-    Serial.println(dBFS);
-    Serial.print("difference = ");
-    Serial.println(difference);
-    Serial.print("gain = ");
-    Serial.println(gain);
-    Serial.print("output = ");
-    Serial.println(output);
-  }
+  // if (count % 1000 == 0) {
+  //   Serial.print("compression_threshold = ");
+  //   Serial.println(compression_threshold);
+  //   Serial.print("compression_ratio = ");
+  //   Serial.println(compression_ratio);
+  //   Serial.print("dBFS value = ");
+  //   Serial.println(dBFS);
+  //   Serial.print("difference = ");
+  //   Serial.println(difference);
+  //   Serial.print("gain = ");
+  //   Serial.println(gain);
+  //   Serial.print("output = ");
+  //   Serial.println(output);
+  // }
   return output;
 }
 

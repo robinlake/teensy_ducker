@@ -36,7 +36,8 @@ class AudioEffectCompressor : public AudioStream {
 public:
   AudioEffectCompressor(void) : AudioStream(1, inputQueueArray) {}
 
-  bool begin();
+  bool begin(float compression_threshold, float compression_ratio,
+             float attack_ms, float release_ms);
   bool set_default_values(float compression_threshold, float compression_ratio,
                           float attack_ms, float release_ms);
   virtual void update(void);
@@ -54,8 +55,7 @@ private:
   float dBFS(short sample);
   float compress_dBFS(float dBFS);
   void compress_block(audio_block_t *block);
-  // void allocate(int memory);
-  // audio_block_t allocate() = AudioStream::allocate();
+  float apply_attack_ratio(float dBFS);
 };
 
 #endif
