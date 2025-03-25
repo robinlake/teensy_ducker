@@ -77,6 +77,11 @@ float dBFS(int sample) {
   return output;
 }
 
+// short dBFS_to_sample(float dBFS) {
+//   // todo: apply the opposite of the dBFS function
+//   // convert back into a short that cen be used for output
+// }
+
 int count = 0;
 // returns average level for given audio block
 float calculate_volume_db(audio_block_t *block) {
@@ -106,6 +111,19 @@ float calculate_volume_db(audio_block_t *block) {
 
   return average;
 }
+
+void compress_block(audio_block_t *block) {
+  short *data;
+  data = block->data;
+
+  for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+    int sample = data[i];
+    float sample_dbfs = dBFS(sample);
+    // todo: apply compression ratio to sample_dbfs
+    int compressed_sample = dBFS_to_sample(sample_dbfs);
+    data[i] = compressed_sample;
+  }
+}
 void AudioEffectCompressor::update(void) {
   audio_block_t *block;
   short *bp;
@@ -115,6 +133,8 @@ void AudioEffectCompressor::update(void) {
     return;
 
   bp = block->data;
+
+  // audio_block_t *compressed_block = AudioStream::allocate(20);
   float volume_db = calculate_volume_db(block);
   // if (count % 100 == 0) {
   //   Serial.print("level = ");
@@ -123,7 +143,7 @@ void AudioEffectCompressor::update(void) {
   //   Serial.println(compression_threshold);
   // }
   if (volume_db > compression_threshold) {
-
+    // compress_block(*compressed_block);
     // Serial.println("trigger compression");
   }
 
