@@ -77,10 +77,25 @@ float dBFS(int sample) {
   return output;
 }
 
-// short dBFS_to_sample(float dBFS) {
-//   // todo: apply the opposite of the dBFS function
-//   // convert back into a short that cen be used for output
-// }
+// dBFS = 20 * log(A / Amax)
+// dBFS / 20 = log(A / Amax)
+// dBFS / 20 = log(A) - log(Amax)
+// dBFS / 20 + log(Amax) = log(A)
+short dBFS_to_sample(float dBFS) {
+  // todo: apply the opposite of the dBFS function
+  // convert back into a short that cen be used for output
+  float log_of_max = log10f(max_sample);
+  Serial.print("log of max = ");
+  Serial.println(log_of_max);
+  float left_side = log_of_max + (dBFS / 20);
+  Serial.print("left side = ");
+  Serial.println(left_side);
+  float answer = pow(left_side, 10);
+  Serial.print("answer = ");
+  Serial.println(answer);
+  short output = answer;
+  return output;
+}
 
 int count = 0;
 // returns average level for given audio block
@@ -134,19 +149,20 @@ void AudioEffectCompressor::update(void) {
 
   bp = block->data;
 
-  // audio_block_t *compressed_block = AudioStream::allocate(20);
+  // audio_block_t *compressed_block = AudioEffectCompressor::allocate(20);
+  // audio_block_t *compressed_block;
+  // audio_block_t new_block = AudioEffectCompressor::allocate();
   float volume_db = calculate_volume_db(block);
-  // if (count % 100 == 0) {
-  //   Serial.print("level = ");
-  //   Serial.println(volume_db);
-  //   Serial.print("threshold = ");
-  //   Serial.println(compression_threshold);
-  // }
-  if (volume_db > compression_threshold) {
-    // compress_block(*compressed_block);
-    // Serial.println("trigger compression");
+  if (count % 100 == 0) {
+    // Serial.print("level = ");
+    // Serial.println(volume_db);
+    // Serial.print("threshold = ");
+    // Serial.println(compression_threshold);
+    if (volume_db > compression_threshold) {
+      // compress_block(compressed_block);
+      // Serial.println("trigger compression");
+    }
   }
-
   // transmit the block and release memory
   transmit(block, 0);
   release(block);

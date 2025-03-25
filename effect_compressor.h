@@ -1,5 +1,5 @@
-/* Audio Library for Teensy 3.X
- * Copyright (c) 2014, Pete (El Supremo)
+/* Audio Library for Teensy 3.X, 4.X
+ * Copyright (c) 2015, Lily Lake
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,8 @@
 
 /******************************************************************/
 
-//                A u d i o E f f e c t C h o r u s
-// Written by Pete (El Supremo) Jan 2014
-// 140219 - correct storage class (not static)
+//                A u d i o E f f e c t C o m p r e s s o r
+// Written by Lily Lake 2025
 
 class AudioEffectCompressor : public AudioStream {
 public:
@@ -52,6 +51,8 @@ private:
   // from audio library analyze_peak.h
   int max_sample = 32767;
   float dBFS(short sample);
+  // void allocate(int memory);
+  audio_block_t allocate();
 };
 
 #endif
