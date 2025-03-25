@@ -41,7 +41,7 @@ Serial.println(")");
 #endif
 
   Serial.println("begin compressor");
-  set_default_values(-30.0f, 3.0f, 10.0f, 30.0f);
+  set_default_values(-50.0f, 3.0f, 10.0f, 30.0f);
 
   return (true);
 }
@@ -61,6 +61,15 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
   this->attack_ms = attack_ms;
   this->release_ms = release_ms;
   Serial.println("setting default values");
+  Serial.println("Default values: ");
+  Serial.print("compression_threshold = ");
+  Serial.println(this->compression_threshold);
+  Serial.print("compression_ratio = ");
+  Serial.println(this->compression_ratio);
+  Serial.print("attack_ms = ");
+  Serial.println(this->attack_ms);
+  Serial.print("release_ms = ");
+  Serial.println(this->release_ms);
 
   return (true);
 }
@@ -181,11 +190,38 @@ float calculate_average_volume_db(audio_block_t *block) {
   return average;
 }
 
-void compress_block(audio_block_t *block) {
+float AudioEffectCompressor::compress_dBFS(float dBFS) {
+  // if (dBFS < compression_threshold) {
+  //   return dBFS;
+  // }
+  // amount that signal exceeds threshold
+  float difference = dBFS - this->compression_threshold;
+  float gain = difference / this->compression_ratio;
+  // float output = dBFS - reduction;
+  float output = this->compression_threshold + gain;
+  if (count % 1000 == 0) {
+    Serial.print("compression_threshold = ");
+    Serial.println(compression_threshold);
+    Serial.print("compression_ratio = ");
+    Serial.println(compression_ratio);
+    Serial.print("dBFS value = ");
+    Serial.println(dBFS);
+    Serial.print("difference = ");
+    Serial.println(difference);
+    Serial.print("gain = ");
+    Serial.println(gain);
+    Serial.print("output = ");
+    Serial.println(output);
+  }
+  return output;
+}
+
+void AudioEffectCompressor::compress_block(audio_block_t *block) {
   short *samples;
   samples = block->data;
   short original_samples[AUDIO_BLOCK_SAMPLES];
   short dBFS_samples[AUDIO_BLOCK_SAMPLES];
+  short dBFS_samples_compressed[AUDIO_BLOCK_SAMPLES];
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     original_samples[i] = samples[i];
     int sample = samples[i];
@@ -193,10 +229,12 @@ void compress_block(audio_block_t *block) {
     if (sample < 0) {
       is_negative = true;
     }
-    float sample_dbfs = sample_to_dBFS(sample);
-    dBFS_samples[i] = sample_dbfs;
+    float sample_dBFS = sample_to_dBFS(sample);
+    dBFS_samples[i] = sample_dBFS;
     // todo: apply compression ratio to sample_dbfs
-    short compressed_sample = dBFS_to_sample(sample_dbfs, is_negative);
+    short compressed_dBFS = compress_dBFS(sample_dBFS);
+    dBFS_samples_compressed[i] = compressed_dBFS;
+    short compressed_sample = dBFS_to_sample(compressed_dBFS, is_negative);
     samples[i] = compressed_sample;
   }
 
@@ -215,7 +253,14 @@ void compress_block(audio_block_t *block) {
     }
     Serial.println("");
 
-    Serial.print("compressed values = ");
+    Serial.print("compressed dBFS values = ");
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+      Serial.print(dBFS_samples_compressed[i]);
+      Serial.print(", ");
+    }
+    Serial.println("");
+
+    Serial.print("compressed PCM values = ");
     for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
       Serial.print(samples[i]);
       Serial.print(", ");

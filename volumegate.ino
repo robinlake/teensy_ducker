@@ -78,10 +78,6 @@ void wait(unsigned int milliseconds) {
     }
 }
 
-void setupCompressor(AudioEffectCompressor *comp, boolean use_HP_filter, float knee_dBFS, float comp_ratio, float attack_sec, float release_sec) {
-  return;
-}
-
 void setup() {
     // allocate memory
     AudioMemory(20);
@@ -90,13 +86,7 @@ void setup() {
     // knob
     a1history = analogRead(A1);
     // initialize compressor
-    bool use_HP_filter = true;
-  float knee_dBFS = 6;
-  float comp_ratio = 3;
-  float attack_sec = 0.001;
-  float release_sec = 0.08;
-    comp1.begin();
-    setupCompressor(&comp1, use_HP_filter, knee_dBFS, comp_ratio, attack_sec, release_sec);
+  comp1.set_default_values(-50.0f, 3.0f, 10.0f, 30.0f);
 }
 
 void loop() {

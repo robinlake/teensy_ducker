@@ -52,6 +52,8 @@ private:
   int max_sample = 32767;
   int min_sample = -32768;
   float dBFS(short sample);
+  float compress_dBFS(float dBFS);
+  void compress_block(audio_block_t *block);
   // void allocate(int memory);
   // audio_block_t allocate() = AudioStream::allocate();
 };
