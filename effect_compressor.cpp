@@ -67,6 +67,7 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
 
 int max_sample = 32767;
 int min_sample = -32768;
+int count = 0;
 // still giving some eroneous values
 // they are very negative numbers
 // temporary fix: set to minimum value for these numbers
@@ -121,24 +122,24 @@ short dBFS_to_sample(float dBFS) {
   // todo: apply the opposite of the dBFS function
   // convert back into a short that cen be used for output
   float log_of_max = log10f(max_sample);
-  // Serial.print("log of max = ");
-  // Serial.println(log_of_max);
   float left_side;
-  if (dBFS == 0.0f) {
-    left_side = log_of_max;
-  } else {
-    left_side = log_of_max + (dBFS / 20);
+  left_side = log_of_max + (dBFS / 20.0f);
+  float answer = powf(10, left_side);
+  if (count % 1000 == 0) {
+
+    // Serial.print("dBFS = ");
+    // Serial.println(dBFS);
+    // Serial.print("log of max = ");
+    // Serial.println(log_of_max);
+    // Serial.print("left side = ");
+    // Serial.println(left_side);
+    // Serial.print("answer = ");
+    // Serial.println(answer);
   }
-  // Serial.print("left side = ");
-  // Serial.println(left_side);
-  float answer = pow(left_side, 10);
-  // Serial.print("answer = ");
-  // Serial.println(answer);
   short output = answer;
   return output;
 }
 
-int count = 0;
 // returns average level for given audio block
 float calculate_average_volume_db(audio_block_t *block) {
   count++;
@@ -181,13 +182,15 @@ void compress_block(audio_block_t *block) {
   short *samples;
   samples = block->data;
   short original_samples[AUDIO_BLOCK_SAMPLES];
+  short dBFS_samples[AUDIO_BLOCK_SAMPLES];
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     original_samples[i] = samples[i];
     int sample = samples[i];
-    // float sample_dbfs = sample_to_dBFS(sample);
-    // // todo: apply compression ratio to sample_dbfs
-    // short compressed_sample = dBFS_to_sample(sample_dbfs);
-    // samples[i] = compressed_sample;
+    float sample_dbfs = sample_to_dBFS(sample);
+    dBFS_samples[i] = sample_dbfs;
+    // todo: apply compression ratio to sample_dbfs
+    short compressed_sample = dBFS_to_sample(sample_dbfs);
+    samples[i] = compressed_sample;
   }
 
   if (count % 1000 == 0) {
@@ -197,6 +200,14 @@ void compress_block(audio_block_t *block) {
       Serial.print(", ");
     }
     Serial.println("");
+
+    Serial.print("dBFS values = ");
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+      Serial.print(dBFS_samples[i]);
+      Serial.print(", ");
+    }
+    Serial.println("");
+
     Serial.print("compressed values = ");
     for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
       Serial.print(samples[i]);
