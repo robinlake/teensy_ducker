@@ -52,7 +52,7 @@ private:
   int max_sample = 32767;
   float dBFS(short sample);
   // void allocate(int memory);
-  audio_block_t allocate();
+  // audio_block_t allocate() = AudioStream::allocate();
 };
 
 #endif

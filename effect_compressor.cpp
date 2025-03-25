@@ -150,8 +150,8 @@ void AudioEffectCompressor::update(void) {
   bp = block->data;
 
   // audio_block_t *compressed_block = AudioEffectCompressor::allocate(20);
-  // audio_block_t *compressed_block;
-  // audio_block_t new_block = AudioEffectCompressor::allocate();
+  audio_block_t *compressed_block;
+  compressed_block = AudioEffectCompressor::allocate();
   float volume_db = calculate_volume_db(block);
   if (count % 100 == 0) {
     // Serial.print("level = ");
