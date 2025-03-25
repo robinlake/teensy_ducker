@@ -118,13 +118,16 @@ float sample_to_dBFS(int sample) {
 // dBFS / 20 = log(A / Amax)
 // dBFS / 20 = log(A) - log(Amax)
 // dBFS / 20 + log(Amax) = log(A)
-short dBFS_to_sample(float dBFS) {
+short dBFS_to_sample(float dBFS, bool negative_signal) {
   // todo: apply the opposite of the dBFS function
   // convert back into a short that cen be used for output
   float log_of_max = log10f(max_sample);
   float left_side;
   left_side = log_of_max + (dBFS / 20.0f);
   float answer = powf(10, left_side);
+  if (negative_signal) {
+    answer *= -1.0f;
+  }
   if (count % 1000 == 0) {
 
     // Serial.print("dBFS = ");
@@ -186,10 +189,14 @@ void compress_block(audio_block_t *block) {
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     original_samples[i] = samples[i];
     int sample = samples[i];
+    bool is_negative = false;
+    if (sample < 0) {
+      is_negative = true;
+    }
     float sample_dbfs = sample_to_dBFS(sample);
     dBFS_samples[i] = sample_dbfs;
     // todo: apply compression ratio to sample_dbfs
-    short compressed_sample = dBFS_to_sample(sample_dbfs);
+    short compressed_sample = dBFS_to_sample(sample_dbfs, is_negative);
     samples[i] = compressed_sample;
   }
 
