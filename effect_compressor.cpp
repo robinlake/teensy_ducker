@@ -158,12 +158,18 @@ void AudioEffectCompressor::update(void) {
     // Serial.println(volume_db);
     // Serial.print("threshold = ");
     // Serial.println(compression_threshold);
-    if (volume_db > compression_threshold) {
-      // compress_block(compressed_block);
-      // Serial.println("trigger compression");
-    }
   }
-  // transmit the block and release memory
-  transmit(block, 0);
-  release(block);
+
+  if (volume_db > compression_threshold) {
+    compress_block(compressed_block);
+    // Serial.println("trigger compression");
+    transmit(compressed_block, 0);
+    release(compressed_block);
+    release(block);
+  } else {
+    // transmit the block and release memory
+    transmit(block, 0);
+    release(block);
+    release(compressed_block);
+  }
 }
