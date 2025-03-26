@@ -1,5 +1,5 @@
 
-/* Audio Library for Teensy 3.X
+/* Audio Library for Teensy 3.X, 4.X
  * Copyright (c) 2025, Lily Lake
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -159,18 +159,34 @@ float calculate_average_volume_db(audio_block_t *block) {
   return average;
 }
 
-int ms_to_samples(float ms) {
+float ms_to_samples(float ms) {
   float ms_per_sample = 2.9f / AUDIO_BLOCK_SAMPLES;
-  int samples = ms * ms_per_sample;
+  float samples = ms / ms_per_sample;
+  // if (count % 1000 == 0) {
+  //   Serial.print("audio block samples");
+  //   Serial.println(AUDIO_BLOCK_SAMPLES);
+  //   Serial.print("ms_per_sample = ");
+  //   Serial.println(ms_per_sample);
+  // }
   return samples;
 }
 
-int attack_samples_elapsed = 0;
+float attack_samples_elapsed = 0;
 int release_samples_elapsed = 0;
 
 float AudioEffectCompressor::apply_attack_ratio(float difference) {
-  int attack_samples = ms_to_samples(this->attack_ms);
+  float attack_samples = ms_to_samples(this->attack_ms);
   float ratio = attack_samples_elapsed / attack_samples;
+  // if (count % 1000 == 0) {
+  //   Serial.print("attack ms = ");
+  //   Serial.println(this->attack_ms);
+  //   Serial.print("attack samples = ");
+  //   Serial.println(attack_samples);
+  //   Serial.print("attack samples elapsed = ");
+  //   Serial.println(attack_samples_elapsed);
+  //   Serial.print("attack ratio = ");
+  //   Serial.println(ratio);
+  // }
   return difference * ratio;
 }
 
@@ -179,10 +195,17 @@ float AudioEffectCompressor::compress_dBFS(float dBFS) {
     return dBFS;
   }
   // amount that signal exceeds threshold
-  float difference = dBFS - this->compression_threshold;
-  float gain = difference / this->compression_ratio;
-  gain = apply_attack_ratio(gain);
-  float output = this->compression_threshold + gain;
+  // float difference = dBFS - this->compression_threshold;
+  // float gain = difference / this->compression_ratio;
+  // float output = this->compression_threshold + gain;
+
+  float reduction = dBFS - this->compression_threshold;
+  // amount cut can only be proportional to point in attack curve
+  reduction = apply_attack_ratio(reduction);
+  // makeup gain
+  float makeup_gain = reduction / this->compression_ratio;
+  float output = dBFS - reduction + makeup_gain;
+
   // if (count % 1000 == 0) {
   //   Serial.print("compression_threshold = ");
   //   Serial.println(compression_threshold);
@@ -206,9 +229,12 @@ void AudioEffectCompressor::compress_block(audio_block_t *block) {
   short original_samples[AUDIO_BLOCK_SAMPLES];
   short dBFS_samples[AUDIO_BLOCK_SAMPLES];
   short dBFS_samples_compressed[AUDIO_BLOCK_SAMPLES];
+  int attack_samples = ms_to_samples(this->attack_ms);
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+
     original_samples[i] = samples[i];
     int sample = samples[i];
+    // account for sign of signal
     bool is_negative = false;
     if (sample < 0) {
       is_negative = true;
@@ -220,6 +246,13 @@ void AudioEffectCompressor::compress_block(audio_block_t *block) {
     dBFS_samples_compressed[i] = compressed_dBFS;
     short compressed_sample = dBFS_to_sample(compressed_dBFS, is_negative);
     samples[i] = compressed_sample;
+    if (attack_samples_elapsed < attack_samples) {
+      attack_samples_elapsed++;
+    }
+    // for testing, remove this later
+    if (attack_samples_elapsed >= attack_samples) {
+      attack_samples_elapsed = 0;
+    }
   }
 
   if (count % 1000 == 0) {
@@ -244,12 +277,12 @@ void AudioEffectCompressor::compress_block(audio_block_t *block) {
     }
     Serial.println("");
 
-    Serial.print("compressed PCM values = ");
-    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-      Serial.print(samples[i]);
-      Serial.print(", ");
-    }
-    Serial.println("");
+    // Serial.print("compressed PCM values = ");
+    // for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+    //   Serial.print(samples[i]);
+    //   Serial.print(", ");
+    // }
+    // Serial.println("");
   }
 }
 void AudioEffectCompressor::update(void) {
@@ -281,20 +314,20 @@ void AudioEffectCompressor::update(void) {
     compress_block(compressed_block);
     // Serial.println("trigger compression");
 
-    if (count % 1000 == 0) {
-      Serial.print("block samples: ");
-      for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-        Serial.print(block->data[i]);
-        Serial.print(", ");
-      }
-      Serial.println("");
-      Serial.print("compressed block samples: ");
-      for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-        Serial.print(compressed_block->data[i]);
-        Serial.print(", ");
-      }
-      Serial.println("");
-    }
+    // if (count % 1000 == 0) {
+    //   Serial.print("block samples: ");
+    //   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+    //     Serial.print(block->data[i]);
+    //     Serial.print(", ");
+    //   }
+    //   Serial.println("");
+    //   Serial.print("compressed block samples: ");
+    //   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+    //     Serial.print(compressed_block->data[i]);
+    //     Serial.print(", ");
+    //   }
+    //   Serial.println("");
+    // }
 
     transmit(compressed_block, 0);
     release(compressed_block);
