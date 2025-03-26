@@ -122,7 +122,7 @@ short dBFS_to_sample(float dBFS, bool negative_signal) {
 }
 
 // returns average level for given audio block
-float calculate_average_volume_db(audio_block_t *block) {
+float AudioEffectCompressor::calculate_average_volume_db(audio_block_t *block) {
   count++;
   if (count >= 10000) {
     count = 0;
@@ -174,7 +174,7 @@ float ms_to_samples(float ms) {
 float attack_samples_elapsed = 0;
 int release_samples_elapsed = 0;
 
-float AudioEffectCompressor::apply_attack_ratio(float difference) {
+float AudioEffectCompressor::apply_attack_ratio(float reduction) {
   float attack_samples = ms_to_samples(this->attack_ms);
   float ratio = attack_samples_elapsed / attack_samples;
   // if (count % 1000 == 0) {
@@ -187,7 +187,38 @@ float AudioEffectCompressor::apply_attack_ratio(float difference) {
   //   Serial.print("attack ratio = ");
   //   Serial.println(ratio);
   // }
-  return difference * ratio;
+  return reduction * ratio;
+}
+
+float AudioEffectCompressor::apply_release_ratio(float reduction) {
+  float release_samples = ms_to_samples(this->release_ms);
+  float ratio = release_samples_elapsed / release_samples;
+  // if (count % 1000 == 0) {
+  //   Serial.print("release ms = ");
+  //   Serial.println(this->release_ms);
+  //   Serial.print("release samples = ");
+  //   Serial.println(release_samples);
+  //   Serial.print("release samples elapsed = ");
+  //   Serial.println(release_samples_elapsed);
+  //   Serial.print("release ratio = ");
+  //   Serial.println(ratio);
+  // }
+  return reduction * ratio;
+}
+
+float AudioEffectCompressor::apply_ballistics(float reduction) {
+  float ratio;
+  if (attack_samples_elapsed > 0) {
+    ratio = apply_attack_ratio(reduction);
+    return ratio;
+  }
+  if (release_samples_elapsed > 0) {
+
+    ratio = apply_release_ratio(reduction);
+    return ratio;
+  }
+  ratio = 0.0f;
+  return ratio;
 }
 
 float AudioEffectCompressor::compress_dBFS(float dBFS) {
@@ -201,7 +232,8 @@ float AudioEffectCompressor::compress_dBFS(float dBFS) {
 
   float reduction = dBFS - this->compression_threshold;
   // amount cut can only be proportional to point in attack curve
-  reduction = apply_attack_ratio(reduction);
+  // reduction = apply_attack_ratio(reduction);
+  reduction = apply_ballistics(reduction);
   // makeup gain
   float makeup_gain = reduction / this->compression_ratio;
   float output = dBFS - reduction + makeup_gain;
@@ -285,6 +317,7 @@ void AudioEffectCompressor::compress_block(audio_block_t *block) {
     // Serial.println("");
   }
 }
+
 void AudioEffectCompressor::update(void) {
   audio_block_t *block;
   // short *bp;

@@ -56,6 +56,9 @@ private:
   float compress_dBFS(float dBFS);
   void compress_block(audio_block_t *block);
   float apply_attack_ratio(float dBFS);
+  float calculate_average_volume_db(audio_block_t *block);
+  float apply_ballistics(float reduction);
+  float apply_release_ratio(float reduction);
 };
 
 #endif
