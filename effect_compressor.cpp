@@ -68,10 +68,7 @@ float sample_to_dBFS(int sample) {
 
   // float output = sqrt(pow(sample, 2));
   float output = sample;
-  if (sample == 0) {
-    output = 0.0f;
-    return output;
-  } else if (sample > 0) {
+  if (sample > 0) {
     if (sample == max_sample) {
       output = 0.0f;
       return output;
@@ -302,6 +299,14 @@ void AudioEffectCompressor::update(void) {
     // Serial.println(compression_threshold);
   }
   // remaking compress_block equivalent
+  if (count % 1000 == 0) {
+    Serial.print("uncompressed values = ");
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+      Serial.print(block->data[i]);
+      Serial.print(", ");
+    }
+    Serial.println("");
+  }
 
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     short sample = block->data[i];
