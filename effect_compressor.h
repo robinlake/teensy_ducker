@@ -54,6 +54,7 @@ private:
   int min_sample = -32768;
   float dBFS(short sample);
   float compress_dBFS(float dBFS);
+  short compress_sample(short sample, int i);
   void compress_block(audio_block_t *block);
   float apply_attack_ratio(float dBFS);
   float calculate_average_volume_db(audio_block_t *block);
