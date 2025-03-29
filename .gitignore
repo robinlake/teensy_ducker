@@ -1,0 +1,7 @@
+src/CMakeFiles/
+src/lib/
+src/CMakeCache.txt
+src/Makrfile
+src/catch2.tar.gz
+src/cmake_install.cmake
+src/pins_arduino.h
