@@ -127,13 +127,14 @@ float AudioEffectCompressor::calculate_average_volume_db(audio_block_t *block) {
   short *data;
   data = block->data;
   float total = 0.0f;
+  float sample_count = 0.0f;
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-    int datum = data[i];
+    float datum = data[i];
 
     datum = sample_to_dBFS(datum);
     total += datum;
+    sample_count += 1.0f;
   }
-  float sample_count = AUDIO_BLOCK_SAMPLES;
   float average = total / sample_count;
   if (count % 3000 == 0) {
     Serial.print("total = ");
@@ -241,8 +242,8 @@ float AudioEffectCompressor::compress_dBFS(float dBFS) {
   return output;
 }
 short original_samples[AUDIO_BLOCK_SAMPLES];
-short dBFS_samples[AUDIO_BLOCK_SAMPLES];
-short dBFS_samples_compressed[AUDIO_BLOCK_SAMPLES];
+float dBFS_samples[AUDIO_BLOCK_SAMPLES];
+float dBFS_samples_compressed[AUDIO_BLOCK_SAMPLES];
 short pcm_samples_compressed[AUDIO_BLOCK_SAMPLES];
 
 short AudioEffectCompressor::compress_sample(short sample, int i) {
@@ -267,15 +268,11 @@ void increment_atttack(float attack_samples) {
 
 void AudioEffectCompressor::update(void) {
   audio_block_t *block;
-  // short *bp;
   block = receiveWritable(0);
 
   if (!block)
     return;
 
-  // bp = block->data;
-
-  // audio_block_t *compressed_block = AudioEffectCompressor::allocate(20);
   audio_block_t *compressed_block;
   compressed_block = AudioEffectCompressor::allocate();
   float volume_db = calculate_average_volume_db(block);
@@ -291,7 +288,6 @@ void AudioEffectCompressor::update(void) {
     } else {
       compressed_block->data[i] = sample;
     }
-    // compressed_block->data[i] = block->data[i];
   }
   if (count % 3000 == 0) {
     Serial.print("uncompressed values = ");
