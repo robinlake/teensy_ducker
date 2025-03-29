@@ -96,8 +96,6 @@ float sample_to_dBFS(int sample) {
 // dBFS / 20 = log(A) - log(Amax)
 // dBFS / 20 + log(Amax) = log(A)
 short dBFS_to_sample(float dBFS, bool negative_signal) {
-  // todo: apply the opposite of the dBFS function
-  // convert back into a short that cen be used for output
   float log_of_max = log10f(max_sample);
   float left_side;
   left_side = log_of_max + (dBFS / 20.0f);
@@ -129,26 +127,15 @@ float AudioEffectCompressor::calculate_average_volume_db(audio_block_t *block) {
   short *data;
   data = block->data;
   float total = 0.0f;
-  float dBFS_values[AUDIO_BLOCK_SAMPLES];
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     int datum = data[i];
 
-    // calculate the instantaneous signal power (square the signal)
-    // datum = pow(datum, 2);
-    // datum = sqrt(datum);
     datum = sample_to_dBFS(datum);
     total += datum;
-    dBFS_values[i] = datum;
   }
   float sample_count = AUDIO_BLOCK_SAMPLES;
   float average = total / sample_count;
   if (count % 3000 == 0) {
-    Serial.print("dBFS values = ");
-    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-      Serial.print(dBFS_values[i]);
-      Serial.print(", ");
-    }
-    Serial.println("");
     Serial.print("total = ");
     Serial.println(total);
     Serial.print("average = ");
@@ -259,14 +246,14 @@ short dBFS_samples_compressed[AUDIO_BLOCK_SAMPLES];
 short pcm_samples_compressed[AUDIO_BLOCK_SAMPLES];
 
 short AudioEffectCompressor::compress_sample(short sample, int i) {
-  float sample_dBFS = sample_to_dBFS(sample);
-  dBFS_samples[i] = sample_dBFS;
-  float compressed_dBFS = compress_dBFS(sample_dBFS);
-  dBFS_samples_compressed[i] = compressed_dBFS;
   bool is_negative = false;
   if (sample < 0) {
     is_negative = true;
   }
+  float sample_dBFS = sample_to_dBFS(sample);
+  dBFS_samples[i] = sample_dBFS;
+  float compressed_dBFS = compress_dBFS(sample_dBFS);
+  dBFS_samples_compressed[i] = compressed_dBFS;
   short compressed_sample = dBFS_to_sample(compressed_dBFS, is_negative);
   pcm_samples_compressed[i] = compressed_sample;
   return compressed_sample;
@@ -292,21 +279,6 @@ void AudioEffectCompressor::update(void) {
   audio_block_t *compressed_block;
   compressed_block = AudioEffectCompressor::allocate();
   float volume_db = calculate_average_volume_db(block);
-  if (count % 100 == 0) {
-    // Serial.print("level = ");
-    // Serial.println(volume_db);
-    // Serial.print("threshold = ");
-    // Serial.println(compression_threshold);
-  }
-  // remaking compress_block equivalent
-  if (count % 3000 == 0) {
-    Serial.print("uncompressed values = ");
-    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-      Serial.print(block->data[i]);
-      Serial.print(", ");
-    }
-    Serial.println("");
-  }
 
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     short sample = block->data[i];
@@ -349,6 +321,7 @@ void AudioEffectCompressor::update(void) {
       Serial.print(", ");
     }
     Serial.println("");
+    Serial.println(" ");
   }
   transmit(compressed_block, 0);
   release(compressed_block);
