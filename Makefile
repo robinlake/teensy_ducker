@@ -2,7 +2,8 @@
 all : catch2
 
 src/catch2.tar.gz :
-	wget https://github.com/catchorg/Catch2/archive/v2.11.1.tar.gz -O src/catch2.tar.gz
+	# wget https://github.com/catchorg/Catch2/archive/v2.11.1.tar.gz -O src/catch2.tar.gz
+	wget https://github.com/catchorg/Catch2/archive/v3.8.0.tar.gz -O src/catch2.tar.gz
 
 .PHONY : catch2
 catch2 : src/catch2.tar.gz

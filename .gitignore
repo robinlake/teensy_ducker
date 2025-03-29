@@ -5,3 +5,5 @@ src/Makrfile
 src/catch2.tar.gz
 src/cmake_install.cmake
 src/pins_arduino.h
+src/libvolumegate.a
+src/unitTest

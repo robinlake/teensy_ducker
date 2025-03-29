@@ -143,392 +143,78 @@ volumegate/fast:
 .PHONY : volumegate/fast
 
 #=============================================================================
-# Target rules for targets named Experimental
+# Target rules for targets named Catch2
 
 # Build rule for target.
-Experimental: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Experimental
-.PHONY : Experimental
+Catch2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Catch2
+.PHONY : Catch2
 
 # fast build rule for target.
-Experimental/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/Experimental.dir/build.make lib/Catch2/CMakeFiles/Experimental.dir/build
-.PHONY : Experimental/fast
+Catch2/fast:
+	$(MAKE) $(MAKESILENT) -f lib/Catch2/src/CMakeFiles/Catch2.dir/build.make lib/Catch2/src/CMakeFiles/Catch2.dir/build
+.PHONY : Catch2/fast
 
 #=============================================================================
-# Target rules for targets named Nightly
+# Target rules for targets named Catch2WithMain
 
 # Build rule for target.
-Nightly: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Nightly
-.PHONY : Nightly
+Catch2WithMain: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Catch2WithMain
+.PHONY : Catch2WithMain
 
 # fast build rule for target.
-Nightly/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/Nightly.dir/build.make lib/Catch2/CMakeFiles/Nightly.dir/build
-.PHONY : Nightly/fast
-
-#=============================================================================
-# Target rules for targets named Continuous
-
-# Build rule for target.
-Continuous: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Continuous
-.PHONY : Continuous
-
-# fast build rule for target.
-Continuous/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/Continuous.dir/build.make lib/Catch2/CMakeFiles/Continuous.dir/build
-.PHONY : Continuous/fast
-
-#=============================================================================
-# Target rules for targets named NightlyMemoryCheck
-
-# Build rule for target.
-NightlyMemoryCheck: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyMemoryCheck
-.PHONY : NightlyMemoryCheck
-
-# fast build rule for target.
-NightlyMemoryCheck/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyMemoryCheck.dir/build.make lib/Catch2/CMakeFiles/NightlyMemoryCheck.dir/build
-.PHONY : NightlyMemoryCheck/fast
-
-#=============================================================================
-# Target rules for targets named NightlyStart
-
-# Build rule for target.
-NightlyStart: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyStart
-.PHONY : NightlyStart
-
-# fast build rule for target.
-NightlyStart/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyStart.dir/build.make lib/Catch2/CMakeFiles/NightlyStart.dir/build
-.PHONY : NightlyStart/fast
-
-#=============================================================================
-# Target rules for targets named NightlyUpdate
-
-# Build rule for target.
-NightlyUpdate: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyUpdate
-.PHONY : NightlyUpdate
-
-# fast build rule for target.
-NightlyUpdate/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyUpdate.dir/build.make lib/Catch2/CMakeFiles/NightlyUpdate.dir/build
-.PHONY : NightlyUpdate/fast
-
-#=============================================================================
-# Target rules for targets named NightlyConfigure
-
-# Build rule for target.
-NightlyConfigure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyConfigure
-.PHONY : NightlyConfigure
-
-# fast build rule for target.
-NightlyConfigure/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyConfigure.dir/build.make lib/Catch2/CMakeFiles/NightlyConfigure.dir/build
-.PHONY : NightlyConfigure/fast
-
-#=============================================================================
-# Target rules for targets named NightlyBuild
-
-# Build rule for target.
-NightlyBuild: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyBuild
-.PHONY : NightlyBuild
-
-# fast build rule for target.
-NightlyBuild/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyBuild.dir/build.make lib/Catch2/CMakeFiles/NightlyBuild.dir/build
-.PHONY : NightlyBuild/fast
-
-#=============================================================================
-# Target rules for targets named NightlyTest
-
-# Build rule for target.
-NightlyTest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyTest
-.PHONY : NightlyTest
-
-# fast build rule for target.
-NightlyTest/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyTest.dir/build.make lib/Catch2/CMakeFiles/NightlyTest.dir/build
-.PHONY : NightlyTest/fast
-
-#=============================================================================
-# Target rules for targets named NightlyCoverage
-
-# Build rule for target.
-NightlyCoverage: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyCoverage
-.PHONY : NightlyCoverage
-
-# fast build rule for target.
-NightlyCoverage/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyCoverage.dir/build.make lib/Catch2/CMakeFiles/NightlyCoverage.dir/build
-.PHONY : NightlyCoverage/fast
-
-#=============================================================================
-# Target rules for targets named NightlyMemCheck
-
-# Build rule for target.
-NightlyMemCheck: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlyMemCheck
-.PHONY : NightlyMemCheck
-
-# fast build rule for target.
-NightlyMemCheck/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlyMemCheck.dir/build.make lib/Catch2/CMakeFiles/NightlyMemCheck.dir/build
-.PHONY : NightlyMemCheck/fast
-
-#=============================================================================
-# Target rules for targets named NightlySubmit
-
-# Build rule for target.
-NightlySubmit: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NightlySubmit
-.PHONY : NightlySubmit
-
-# fast build rule for target.
-NightlySubmit/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/NightlySubmit.dir/build.make lib/Catch2/CMakeFiles/NightlySubmit.dir/build
-.PHONY : NightlySubmit/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalStart
-
-# Build rule for target.
-ExperimentalStart: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalStart
-.PHONY : ExperimentalStart
-
-# fast build rule for target.
-ExperimentalStart/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalStart.dir/build.make lib/Catch2/CMakeFiles/ExperimentalStart.dir/build
-.PHONY : ExperimentalStart/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalUpdate
-
-# Build rule for target.
-ExperimentalUpdate: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalUpdate
-.PHONY : ExperimentalUpdate
-
-# fast build rule for target.
-ExperimentalUpdate/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalUpdate.dir/build.make lib/Catch2/CMakeFiles/ExperimentalUpdate.dir/build
-.PHONY : ExperimentalUpdate/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalConfigure
-
-# Build rule for target.
-ExperimentalConfigure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalConfigure
-.PHONY : ExperimentalConfigure
-
-# fast build rule for target.
-ExperimentalConfigure/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalConfigure.dir/build.make lib/Catch2/CMakeFiles/ExperimentalConfigure.dir/build
-.PHONY : ExperimentalConfigure/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalBuild
-
-# Build rule for target.
-ExperimentalBuild: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalBuild
-.PHONY : ExperimentalBuild
-
-# fast build rule for target.
-ExperimentalBuild/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalBuild.dir/build.make lib/Catch2/CMakeFiles/ExperimentalBuild.dir/build
-.PHONY : ExperimentalBuild/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalTest
-
-# Build rule for target.
-ExperimentalTest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalTest
-.PHONY : ExperimentalTest
-
-# fast build rule for target.
-ExperimentalTest/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalTest.dir/build.make lib/Catch2/CMakeFiles/ExperimentalTest.dir/build
-.PHONY : ExperimentalTest/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalCoverage
-
-# Build rule for target.
-ExperimentalCoverage: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalCoverage
-.PHONY : ExperimentalCoverage
-
-# fast build rule for target.
-ExperimentalCoverage/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalCoverage.dir/build.make lib/Catch2/CMakeFiles/ExperimentalCoverage.dir/build
-.PHONY : ExperimentalCoverage/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalMemCheck
-
-# Build rule for target.
-ExperimentalMemCheck: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalMemCheck
-.PHONY : ExperimentalMemCheck
-
-# fast build rule for target.
-ExperimentalMemCheck/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalMemCheck.dir/build.make lib/Catch2/CMakeFiles/ExperimentalMemCheck.dir/build
-.PHONY : ExperimentalMemCheck/fast
-
-#=============================================================================
-# Target rules for targets named ExperimentalSubmit
-
-# Build rule for target.
-ExperimentalSubmit: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ExperimentalSubmit
-.PHONY : ExperimentalSubmit
-
-# fast build rule for target.
-ExperimentalSubmit/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ExperimentalSubmit.dir/build.make lib/Catch2/CMakeFiles/ExperimentalSubmit.dir/build
-.PHONY : ExperimentalSubmit/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousStart
-
-# Build rule for target.
-ContinuousStart: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousStart
-.PHONY : ContinuousStart
-
-# fast build rule for target.
-ContinuousStart/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousStart.dir/build.make lib/Catch2/CMakeFiles/ContinuousStart.dir/build
-.PHONY : ContinuousStart/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousUpdate
-
-# Build rule for target.
-ContinuousUpdate: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousUpdate
-.PHONY : ContinuousUpdate
-
-# fast build rule for target.
-ContinuousUpdate/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousUpdate.dir/build.make lib/Catch2/CMakeFiles/ContinuousUpdate.dir/build
-.PHONY : ContinuousUpdate/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousConfigure
-
-# Build rule for target.
-ContinuousConfigure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousConfigure
-.PHONY : ContinuousConfigure
-
-# fast build rule for target.
-ContinuousConfigure/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousConfigure.dir/build.make lib/Catch2/CMakeFiles/ContinuousConfigure.dir/build
-.PHONY : ContinuousConfigure/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousBuild
-
-# Build rule for target.
-ContinuousBuild: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousBuild
-.PHONY : ContinuousBuild
-
-# fast build rule for target.
-ContinuousBuild/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousBuild.dir/build.make lib/Catch2/CMakeFiles/ContinuousBuild.dir/build
-.PHONY : ContinuousBuild/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousTest
-
-# Build rule for target.
-ContinuousTest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousTest
-.PHONY : ContinuousTest
-
-# fast build rule for target.
-ContinuousTest/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousTest.dir/build.make lib/Catch2/CMakeFiles/ContinuousTest.dir/build
-.PHONY : ContinuousTest/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousCoverage
-
-# Build rule for target.
-ContinuousCoverage: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousCoverage
-.PHONY : ContinuousCoverage
-
-# fast build rule for target.
-ContinuousCoverage/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousCoverage.dir/build.make lib/Catch2/CMakeFiles/ContinuousCoverage.dir/build
-.PHONY : ContinuousCoverage/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousMemCheck
-
-# Build rule for target.
-ContinuousMemCheck: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousMemCheck
-.PHONY : ContinuousMemCheck
-
-# fast build rule for target.
-ContinuousMemCheck/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousMemCheck.dir/build.make lib/Catch2/CMakeFiles/ContinuousMemCheck.dir/build
-.PHONY : ContinuousMemCheck/fast
-
-#=============================================================================
-# Target rules for targets named ContinuousSubmit
-
-# Build rule for target.
-ContinuousSubmit: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ContinuousSubmit
-.PHONY : ContinuousSubmit
-
-# fast build rule for target.
-ContinuousSubmit/fast:
-	$(MAKE) $(MAKESILENT) -f lib/Catch2/CMakeFiles/ContinuousSubmit.dir/build.make lib/Catch2/CMakeFiles/ContinuousSubmit.dir/build
-.PHONY : ContinuousSubmit/fast
-
-spec/effect_compressor.spec.o: spec/effect_compressor.spec.cpp.o
-.PHONY : spec/effect_compressor.spec.o
+Catch2WithMain/fast:
+	$(MAKE) $(MAKESILENT) -f lib/Catch2/src/CMakeFiles/Catch2WithMain.dir/build.make lib/Catch2/src/CMakeFiles/Catch2WithMain.dir/build
+.PHONY : Catch2WithMain/fast
+
+examples/demo.o: examples/demo.cpp.o
+.PHONY : examples/demo.o
 
 # target to build an object file
-spec/effect_compressor.spec.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/effect_compressor.spec.cpp.o
-.PHONY : spec/effect_compressor.spec.cpp.o
+examples/demo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/examples/demo.cpp.o
+.PHONY : examples/demo.cpp.o
 
-spec/effect_compressor.spec.i: spec/effect_compressor.spec.cpp.i
-.PHONY : spec/effect_compressor.spec.i
+examples/demo.i: examples/demo.cpp.i
+.PHONY : examples/demo.i
 
 # target to preprocess a source file
-spec/effect_compressor.spec.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/effect_compressor.spec.cpp.i
-.PHONY : spec/effect_compressor.spec.cpp.i
+examples/demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/examples/demo.cpp.i
+.PHONY : examples/demo.cpp.i
 
-spec/effect_compressor.spec.s: spec/effect_compressor.spec.cpp.s
-.PHONY : spec/effect_compressor.spec.s
+examples/demo.s: examples/demo.cpp.s
+.PHONY : examples/demo.s
 
 # target to generate assembly for a file
-spec/effect_compressor.spec.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/effect_compressor.spec.cpp.s
-.PHONY : spec/effect_compressor.spec.cpp.s
+examples/demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/examples/demo.cpp.s
+.PHONY : examples/demo.cpp.s
+
+spec/demo.spec.o: spec/demo.spec.cpp.o
+.PHONY : spec/demo.spec.o
+
+# target to build an object file
+spec/demo.spec.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/demo.spec.cpp.o
+.PHONY : spec/demo.spec.cpp.o
+
+spec/demo.spec.i: spec/demo.spec.cpp.i
+.PHONY : spec/demo.spec.i
+
+# target to preprocess a source file
+spec/demo.spec.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/demo.spec.cpp.i
+.PHONY : spec/demo.spec.cpp.i
+
+spec/demo.spec.s: spec/demo.spec.cpp.s
+.PHONY : spec/demo.spec.s
+
+# target to generate assembly for a file
+spec/demo.spec.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/demo.spec.cpp.s
+.PHONY : spec/demo.spec.cpp.s
 
 spec/specs.o: spec/specs.cpp.o
 .PHONY : spec/specs.o
@@ -554,30 +240,6 @@ spec/specs.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/spec/specs.cpp.s
 .PHONY : spec/specs.cpp.s
 
-volumegate/effect_compressor.o: volumegate/effect_compressor.cpp.o
-.PHONY : volumegate/effect_compressor.o
-
-# target to build an object file
-volumegate/effect_compressor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/volumegate/effect_compressor.cpp.o
-.PHONY : volumegate/effect_compressor.cpp.o
-
-volumegate/effect_compressor.i: volumegate/effect_compressor.cpp.i
-.PHONY : volumegate/effect_compressor.i
-
-# target to preprocess a source file
-volumegate/effect_compressor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/volumegate/effect_compressor.cpp.i
-.PHONY : volumegate/effect_compressor.cpp.i
-
-volumegate/effect_compressor.s: volumegate/effect_compressor.cpp.s
-.PHONY : volumegate/effect_compressor.s
-
-# target to generate assembly for a file
-volumegate/effect_compressor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/volumegate/effect_compressor.cpp.s
-.PHONY : volumegate/effect_compressor.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -586,45 +248,19 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Continuous"
-	@echo "... ContinuousBuild"
-	@echo "... ContinuousConfigure"
-	@echo "... ContinuousCoverage"
-	@echo "... ContinuousMemCheck"
-	@echo "... ContinuousStart"
-	@echo "... ContinuousSubmit"
-	@echo "... ContinuousTest"
-	@echo "... ContinuousUpdate"
-	@echo "... Experimental"
-	@echo "... ExperimentalBuild"
-	@echo "... ExperimentalConfigure"
-	@echo "... ExperimentalCoverage"
-	@echo "... ExperimentalMemCheck"
-	@echo "... ExperimentalStart"
-	@echo "... ExperimentalSubmit"
-	@echo "... ExperimentalTest"
-	@echo "... ExperimentalUpdate"
-	@echo "... Nightly"
-	@echo "... NightlyBuild"
-	@echo "... NightlyConfigure"
-	@echo "... NightlyCoverage"
-	@echo "... NightlyMemCheck"
-	@echo "... NightlyMemoryCheck"
-	@echo "... NightlyStart"
-	@echo "... NightlySubmit"
-	@echo "... NightlyTest"
-	@echo "... NightlyUpdate"
+	@echo "... Catch2"
+	@echo "... Catch2WithMain"
 	@echo "... unitTest"
 	@echo "... volumegate"
-	@echo "... spec/effect_compressor.spec.o"
-	@echo "... spec/effect_compressor.spec.i"
-	@echo "... spec/effect_compressor.spec.s"
+	@echo "... examples/demo.o"
+	@echo "... examples/demo.i"
+	@echo "... examples/demo.s"
+	@echo "... spec/demo.spec.o"
+	@echo "... spec/demo.spec.i"
+	@echo "... spec/demo.spec.s"
 	@echo "... spec/specs.o"
 	@echo "... spec/specs.i"
 	@echo "... spec/specs.s"
-	@echo "... volumegate/effect_compressor.o"
-	@echo "... volumegate/effect_compressor.i"
-	@echo "... volumegate/effect_compressor.s"
 .PHONY : help
 
 
