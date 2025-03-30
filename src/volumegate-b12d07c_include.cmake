@@ -1,0 +1,5 @@
+if(EXISTS "/Users/robinlake/code/Teensy/volumegate/src/volumegate-b12d07c_tests.cmake")
+  include("/Users/robinlake/code/Teensy/volumegate/src/volumegate-b12d07c_tests.cmake")
+else()
+  add_test(volumegate_NOT_BUILT-b12d07c volumegate_NOT_BUILT-b12d07c)
+endif()

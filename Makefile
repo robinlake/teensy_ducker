@@ -8,7 +8,8 @@ src/catch2.tar.gz :
 .PHONY : catch2
 catch2 : src/catch2.tar.gz
 	mkdir -p src/lib/Catch2
-	tar -C src/lib/Catch2 --strip-components=1 -xf src/catch2.tar.gz
+	# tar -C src/lib/Catch2 --strip-components=1 -xf src/catch2.tar.gz
+	tar -C src/lib/Catch2  -xf src/catch2.tar.gz
 
 
 .PHONY : clean
