@@ -14,7 +14,7 @@ add_executable(unitTest tests/specs.cpp ${TESTS})
 
 # add_library(volumegate volumegate/effect_compressor.cpp)
 add_library(demo examples/demo.cpp)
-add_library(volumegate volumegate/utils.cpp)
+add_library(volumegate util/utils.cpp)
 target_link_libraries(unitTest Catch2::Catch2WithMain volumegate)
 target_link_libraries(unitTest Catch2::Catch2WithMain demo)
 

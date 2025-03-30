@@ -52,10 +52,10 @@ private:
   // from audio library analyze_peak.h
   int max_sample = 32767;
   int min_sample = -32768;
-  float dBFS(short sample);
-  float compress_dBFS(float dBFS);
+  float dbfs(short sample);
+  float compress_dbfs(float dbfs);
   short compress_sample(short sample, int i);
-  float apply_attack_ratio(float dBFS);
+  float apply_attack_ratio(float dbfs);
   float calculate_average_volume_db(audio_block_t *block);
   float apply_ballistics(float reduction);
   float apply_release_ratio(float reduction);

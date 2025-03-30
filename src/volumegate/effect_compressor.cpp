@@ -22,6 +22,7 @@
  */
 
 #include "effect_compressor.h"
+#include "utils.h"
 #include <Arduino.h>
 #include <arm_math.h> //ARM DSP extensions.
 #include <math.h>
@@ -57,58 +58,26 @@ bool AudioEffectCompressor::set_default_values(float compression_threshold,
   return (true);
 }
 
-int max_sample = 32767;
-int min_sample = -32768;
 int count = 0;
-// still giving some eroneous values
-// they are very negative numbers
-// temporary fix: set to minimum value for these numbers
-float min_dBFS = -160.0f;
-float sample_to_dBFS(int sample) {
 
-  // float output = sqrt(pow(sample, 2));
-  float output = sample;
-  if (sample > 0) {
-    if (sample == max_sample) {
-      output = 0.0f;
-      return output;
-    }
-    output = 20 * log10f(output / max_sample);
-    if (output < min_dBFS) {
-      return min_dBFS;
-    }
-    return output;
-  } else {
-    if (sample == min_sample) {
-      output = 0.0f;
-      return output;
-    }
-    output = 20.0f * log10f((output * -1.0f) / (min_sample * -1.0f));
-    if (output < min_dBFS) {
-      return min_dBFS;
-    }
-    return output;
-  }
-}
-
-// dBFS = 20 * log(A / Amax)
-// dBFS / 20 = log(A / Amax)
-// dBFS / 20 = log(A) - log(Amax)
-// dBFS / 20 + log(Amax) = log(A)
-short dBFS_to_sample(float dBFS, bool negative_signal) {
-  // todo: apply the opposite of the dBFS function
+// dbfs = 20 * log(A / Amax)
+// dbfs / 20 = log(A / Amax)
+// dbfs / 20 = log(A) - log(Amax)
+// dbfs / 20 + log(Amax) = log(A)
+short dbfs_to_sample(float dbfs, bool negative_signal) {
+  // todo: apply the opposite of the dbfs function
   // convert back into a short that cen be used for output
   float log_of_max = log10f(max_sample);
   float left_side;
-  left_side = log_of_max + (dBFS / 20.0f);
+  left_side = log_of_max + (dbfs / 20.0f);
   float answer = powf(10, left_side);
   if (negative_signal) {
     answer *= -1.0f;
   }
   if (count % 3000 == 0) {
 
-    // Serial.print("dBFS = ");
-    // Serial.println(dBFS);
+    // Serial.print("dbfs = ");
+    // Serial.println(dbfs);
     // Serial.print("log of max = ");
     // Serial.println(log_of_max);
     // Serial.print("left side = ");
@@ -129,23 +98,23 @@ float AudioEffectCompressor::calculate_average_volume_db(audio_block_t *block) {
   short *data;
   data = block->data;
   float total = 0.0f;
-  float dBFS_values[AUDIO_BLOCK_SAMPLES];
+  float dbfs_values[AUDIO_BLOCK_SAMPLES];
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     int datum = data[i];
 
     // calculate the instantaneous signal power (square the signal)
     // datum = pow(datum, 2);
     // datum = sqrt(datum);
-    datum = sample_to_dBFS(datum);
+    datum = sample_to_dbfs(datum);
     total += datum;
-    dBFS_values[i] = datum;
+    dbfs_values[i] = datum;
   }
   float sample_count = AUDIO_BLOCK_SAMPLES;
   float average = total / sample_count;
   if (count % 3000 == 0) {
-    Serial.print("dBFS values = ");
+    Serial.print("dbfs values = ");
     for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-      Serial.print(dBFS_values[i]);
+      Serial.print(dbfs_values[i]);
       Serial.print(", ");
     }
     Serial.println("");
@@ -220,30 +189,30 @@ float AudioEffectCompressor::apply_ballistics(float reduction) {
   return ratio;
 }
 
-float AudioEffectCompressor::compress_dBFS(float dBFS) {
-  if (dBFS < compression_threshold) {
-    return dBFS;
+float AudioEffectCompressor::compress_dbfs(float dbfs) {
+  if (dbfs < compression_threshold) {
+    return dbfs;
   }
   // amount that signal exceeds threshold
-  // float difference = dBFS - this->compression_threshold;
+  // float difference = dbfs - this->compression_threshold;
   // float gain = difference / this->compression_ratio;
   // float output = this->compression_threshold + gain;
 
-  float reduction = dBFS - this->compression_threshold;
+  float reduction = dbfs - this->compression_threshold;
   // amount cut can only be proportional to point in attack curve
   // reduction = apply_attack_ratio(reduction);
   reduction = apply_ballistics(reduction);
   // makeup gain
   float makeup_gain = reduction / this->compression_ratio;
-  float output = dBFS - reduction + makeup_gain;
+  float output = dbfs - reduction + makeup_gain;
 
   // if (count % 3000 == 0) {
   //   Serial.print("compression_threshold = ");
   //   Serial.println(compression_threshold);
   //   Serial.print("compression_ratio = ");
   //   Serial.println(compression_ratio);
-  //   Serial.print("dBFS value = ");
-  //   Serial.println(dBFS);
+  //   Serial.print("dbfs value = ");
+  //   Serial.println(dbfs);
   //   Serial.print("difference = ");
   //   Serial.println(difference);
   //   Serial.print("gain = ");
@@ -254,20 +223,20 @@ float AudioEffectCompressor::compress_dBFS(float dBFS) {
   return output;
 }
 short original_samples[AUDIO_BLOCK_SAMPLES];
-short dBFS_samples[AUDIO_BLOCK_SAMPLES];
-short dBFS_samples_compressed[AUDIO_BLOCK_SAMPLES];
+short dbfs_samples[AUDIO_BLOCK_SAMPLES];
+short dbfs_samples_compressed[AUDIO_BLOCK_SAMPLES];
 short pcm_samples_compressed[AUDIO_BLOCK_SAMPLES];
 
 short AudioEffectCompressor::compress_sample(short sample, int i) {
-  float sample_dBFS = sample_to_dBFS(sample);
-  dBFS_samples[i] = sample_dBFS;
-  float compressed_dBFS = compress_dBFS(sample_dBFS);
-  dBFS_samples_compressed[i] = compressed_dBFS;
+  float sample_dbfs = sample_to_dbfs(sample);
+  dbfs_samples[i] = sample_dbfs;
+  float compressed_dbfs = compress_dbfs(sample_dbfs);
+  dbfs_samples_compressed[i] = compressed_dbfs;
   bool is_negative = false;
   if (sample < 0) {
     is_negative = true;
   }
-  short compressed_sample = dBFS_to_sample(compressed_dBFS, is_negative);
+  short compressed_sample = dbfs_to_sample(compressed_dbfs, is_negative);
   pcm_samples_compressed[i] = compressed_sample;
   return compressed_sample;
 }
@@ -310,7 +279,7 @@ void AudioEffectCompressor::update(void) {
 
   for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
     short sample = block->data[i];
-    float sample_volume_db = sample_to_dBFS(sample);
+    float sample_volume_db = sample_to_dbfs(sample);
     if (sample_volume_db > compression_threshold) {
       if (attack_samples_elapsed < ms_to_samples(this->attack_ms)) {
         attack_samples_elapsed++;
@@ -329,16 +298,16 @@ void AudioEffectCompressor::update(void) {
     }
     Serial.println("");
 
-    Serial.print("dBFS values = ");
+    Serial.print("dbfs values = ");
     for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-      Serial.print(dBFS_samples[i]);
+      Serial.print(dbfs_samples[i]);
       Serial.print(", ");
     }
     Serial.println("");
 
-    Serial.print("compressed dBFS values = ");
+    Serial.print("compressed dbfs values = ");
     for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-      Serial.print(dBFS_samples_compressed[i]);
+      Serial.print(dbfs_samples_compressed[i]);
       Serial.print(", ");
     }
     Serial.println("");
