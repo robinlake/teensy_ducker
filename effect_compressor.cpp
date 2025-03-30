@@ -164,32 +164,12 @@ int release_samples_elapsed = 0;
 float AudioEffectCompressor::apply_attack_ratio(float reduction) {
   float attack_samples = ms_to_samples(this->attack_ms);
   float ratio = attack_samples_elapsed / attack_samples;
-  // if (count % 3000 == 0) {
-  //   Serial.print("attack ms = ");
-  //   Serial.println(this->attack_ms);
-  //   Serial.print("attack samples = ");
-  //   Serial.println(attack_samples);
-  //   Serial.print("attack samples elapsed = ");
-  //   Serial.println(attack_samples_elapsed);
-  //   Serial.print("attack ratio = ");
-  //   Serial.println(ratio);
-  // }
   return reduction * ratio;
 }
 
 float AudioEffectCompressor::apply_release_ratio(float reduction) {
   float release_samples = ms_to_samples(this->release_ms);
   float ratio = release_samples_elapsed / release_samples;
-  // if (count % 3000 == 0) {
-  //   Serial.print("release ms = ");
-  //   Serial.println(this->release_ms);
-  //   Serial.print("release samples = ");
-  //   Serial.println(release_samples);
-  //   Serial.print("release samples elapsed = ");
-  //   Serial.println(release_samples_elapsed);
-  //   Serial.print("release ratio = ");
-  //   Serial.println(ratio);
-  // }
   return reduction * ratio;
 }
 
