@@ -651,29 +651,29 @@ tests/utils.test.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/unitTest.dir/build.make CMakeFiles/unitTest.dir/tests/utils.test.cpp.s
 .PHONY : tests/utils.test.cpp.s
 
-util/utils.o: util/utils.cpp.o
-.PHONY : util/utils.o
+volumegate/utils.o: volumegate/utils.cpp.o
+.PHONY : volumegate/utils.o
 
 # target to build an object file
-util/utils.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/util/utils.cpp.o
-.PHONY : util/utils.cpp.o
+volumegate/utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/volumegate/utils.cpp.o
+.PHONY : volumegate/utils.cpp.o
 
-util/utils.i: util/utils.cpp.i
-.PHONY : util/utils.i
+volumegate/utils.i: volumegate/utils.cpp.i
+.PHONY : volumegate/utils.i
 
 # target to preprocess a source file
-util/utils.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/util/utils.cpp.i
-.PHONY : util/utils.cpp.i
+volumegate/utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/volumegate/utils.cpp.i
+.PHONY : volumegate/utils.cpp.i
 
-util/utils.s: util/utils.cpp.s
-.PHONY : util/utils.s
+volumegate/utils.s: volumegate/utils.cpp.s
+.PHONY : volumegate/utils.s
 
 # target to generate assembly for a file
-util/utils.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/util/utils.cpp.s
-.PHONY : util/utils.cpp.s
+volumegate/utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volumegate.dir/build.make CMakeFiles/volumegate.dir/volumegate/utils.cpp.s
+.PHONY : volumegate/utils.cpp.s
 
 # Help Target
 help:
@@ -729,9 +729,9 @@ help:
 	@echo "... tests/utils.test.o"
 	@echo "... tests/utils.test.i"
 	@echo "... tests/utils.test.s"
-	@echo "... util/utils.o"
-	@echo "... util/utils.i"
-	@echo "... util/utils.s"
+	@echo "... volumegate/utils.o"
+	@echo "... volumegate/utils.i"
+	@echo "... volumegate/utils.s"
 .PHONY : help
 
 
